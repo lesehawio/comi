@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#05080d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="کامی">
+<title>کامی — آموزش کامپیوتر</title>
+<link rel="icon" href="https://raw.githubusercontent.com/lesehawio/comi/main/comi1.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/lesehawio/comi/main/comi1.png">
+<style>
+/* ============================================================
+   کامی — منوی مرجع   •   تم شیشه‌ای (visionOS)
+
+   یک درس • یک امتحان • کارنامه • پروفایل یک‌بار
+
+   فایل‌های کنارش:
+        1-1.html   ← درس
+        e-1.html   ← امتحان
+        exam.css   exam.js
+   ============================================================ */
+
+:root{
+    --bg:        #05080d;
+    --glass:     rgba(255,255,255,.065);
+    --glass-2:   rgba(255,255,255,.10);
+    --stroke:    rgba(255,255,255,.12);
+    --stroke-2:  rgba(255,255,255,.20);
+    --text:      #f2f6fa;
+    --muted:     #8a97a8;
+    --dim:       #626e80;
+    --accent:    #4ade80;
+    --shadow:    0 26px 60px rgba(0,0,0,.55);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    overscroll-behavior:none;
+}
+
+body{
+    font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+    direction:rtl;
+    color:var(--text);
+    background:var(--bg);
+}
+
+#app{
+    height:100dvh;
+    height:100vh;
+    max-width:560px;
+    margin:0 auto;
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+}
+
+/* نورهای پس‌زمینه — عمق شیشه‌ای */
+#app::before{
+    content:'';
+    position:absolute;
+    inset:-25%;
+    z-index:0;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 18% 8%,  rgba(74,222,128,.26), rgba(0,0,0,0) 42%),
+        radial-gradient(circle at 88% 18%, rgba(96,140,255,.22), rgba(0,0,0,0) 44%),
+        radial-gradient(circle at 50% 108%, rgba(74,222,128,.16), rgba(0,0,0,0) 52%);
+    filter:blur(70px);
+    animation:aurora 22s ease-in-out infinite alternate;
+}
+
+@keyframes aurora{
+    0%{ transform:translate3d(0,0,0) scale(1); }
+    100%{ transform:translate3d(-3%,3%,0) scale(1.08); }
+}
+
+.screen{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    display:none;
+    flex-direction:column;
+}
+
+.screen.show{ display:flex; }
+
+/* ============================================================
+   سرصفحه — شیشه
+   ============================================================ */
+
+.hdr{
+    flex:0 0 auto;
+    height:74px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:0 18px;
+    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+    border-bottom:1px solid var(--stroke);
+    backdrop-filter:blur(24px) saturate(160%);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.13);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:20px;
+    font-weight:bold;
+    letter-spacing:.2px;
+}
+
+.brand img{
+    display:block;
+    width:52px;
+    height:52px;
+    object-fit:contain;
+    filter:drop-shadow(0 6px 16px rgba(74,222,128,.45));
+}
+
+.spacer{ flex:1; }
+
+.prof{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    height:48px;
+    padding:0 16px 0 12px;
+    border-radius:24px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+    color:var(--text);
+    font-family:inherit;
+    font-size:15px;
+    cursor:pointer;
+    max-width:170px;
+    transition:transform .14s ease, background .2s;
+}
+
+.prof:active{ transform:scale(.96); background:rgba(255,255,255,.14); }
+
+.prof b{
+    display:grid;
+    place-items:center;
+    width:28px;
+    height:28px;
+    flex:0 0 auto;
+    border-radius:50%;
+    background:linear-gradient(180deg,#5ee393,#34a866);
+    color:#03170c;
+    font-size:14px;
+    font-weight:bold;
+    box-shadow:0 4px 12px rgba(74,222,128,.4);
+}
+
+.prof span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.icon{
+    flex:0 0 auto;
+    width:48px;
+    height:48px;
+    border-radius:16px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+    color:#c6d0de;
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    padding:0;
+    transition:transform .14s ease, background .2s;
+}
+
+.icon:active{ transform:scale(.94); background:rgba(255,255,255,.15); }
+
+.hdr .ht{
+    flex:1;
+    font-size:17px;
+    font-weight:bold;
+    color:var(--text);
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+/* ============================================================
+   بدنه
+   ============================================================ */
+
+.body{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:26px 18px 44px;
+}
+
+.secLabel{
+    font-size:13px;
+    color:var(--dim);
+    letter-spacing:1px;
+    margin:0 6px 12px;
+    font-weight:bold;
+}
+
+/* ============================================================
+   کارت شیشه‌ای
+   ============================================================ */
+
+.card{
+    position:relative;
+    background:linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
+    border:1px solid var(--stroke);
+    border-radius:28px;
+    padding:24px;
+    margin-bottom:18px;
+    backdrop-filter:blur(26px) saturate(160%);
+    -webkit-backdrop-filter:blur(26px) saturate(160%);
+    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.15);
+    overflow:hidden;
+}
+
+/* بازتاب نور روی لبه‌ی بالا */
+.card::before{
+    content:'';
+    position:absolute;
+    left:12%;
+    right:12%;
+    top:0;
+    height:1px;
+    background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+    pointer-events:none;
+}
+
+.card .tag{
+    display:inline-block;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:.8px;
+    padding:6px 13px;
+    border-radius:11px;
+    background:rgba(74,222,128,.16);
+    border:1px solid rgba(74,222,128,.28);
+    color:#7cf0a6;
+    margin-bottom:14px;
+}
+
+.card .tag.amber{
+    background:rgba(224,185,106,.15);
+    border-color:rgba(224,185,106,.28);
+    color:#ecc98a;
+}
+
+.card h2{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:8px;
+    line-height:1.5;
+    letter-spacing:.2px;
+}
+
+.card p{
+    font-size:14.5px;
+    color:var(--muted);
+    line-height:2;
+    margin-bottom:20px;
+}
+
+/* ============================================================
+   دکمه‌ها
+   ============================================================ */
+
+.btn{
+    display:block;
+    width:100%;
+    min-height:58px;
+    border-radius:19px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.045));
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16);
+    color:var(--text);
+    font-family:inherit;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:transform .14s ease, background .2s;
+}
+
+.btn:active{ transform:scale(.975); background:rgba(255,255,255,.16); }
+
+.btn.solid{
+    background:linear-gradient(180deg,#63e89a,#31a463);
+    border-color:rgba(255,255,255,.34);
+    color:#03170c;
+    box-shadow:
+        0 14px 34px rgba(74,222,128,.34),
+        inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+.btn.solid:active{ background:linear-gradient(180deg,#55d98b,#2b9157); }
+
+.btn.amber{
+    background:linear-gradient(180deg,#e5c179,#b98f42);
+    border-color:rgba(255,255,255,.32);
+    color:#241903;
+    box-shadow:
+        0 14px 34px rgba(224,185,106,.28),
+        inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+.card.slim{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:20px 22px;
+}
+
+.card.slim .k{
+    font-size:17px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.card.slim .v{
+    font-size:13.5px;
+    color:var(--muted);
+    line-height:1.8;
+}
+
+.ghost{
+    flex:0 0 auto;
+    min-height:46px;
+    padding:0 22px;
+    border-radius:15px;
+    border:1px solid rgba(74,222,128,.45);
+    background:rgba(74,222,128,.10);
+    color:#7cf0a6;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:transform .14s ease, background .2s;
+}
+
+.ghost:active{ transform:scale(.95); background:rgba(74,222,128,.22); }
+
+/* ============================================================
+   پروفایل
+   ============================================================ */
+
+.center{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:30px 22px;
+    overflow-y:auto;
+}
+
+.hero{
+    position:relative;
+    margin-bottom:30px;
+    display:grid;
+    place-items:center;
+}
+
+/* هاله‌ی نور پشت لوگو — عمق، نه کادر */
+.hero::before{
+    content:'';
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(74,222,128,.30), rgba(74,222,128,0) 68%);
+    filter:blur(24px);
+    pointer-events:none;
+}
+
+.hero img{
+    position:relative;
+    display:block;
+    width:184px;
+    height:184px;
+    object-fit:contain;
+    filter:drop-shadow(0 18px 40px rgba(74,222,128,.42));
+    animation:heroIn .8s cubic-bezier(.2,.9,.3,1) both;
+}
+
+@keyframes heroIn{
+    from{ opacity:0; transform:scale(.82) translateY(16px); }
+    to{ opacity:1; transform:scale(1) translateY(0); }
+}
+
+.panel{
+    position:relative;
+    width:100%;
+    max-width:400px;
+    background:linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
+    border:1px solid var(--stroke);
+    border-radius:30px;
+    padding:28px 24px;
+    backdrop-filter:blur(26px) saturate(160%);
+    -webkit-backdrop-filter:blur(26px) saturate(160%);
+    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.15);
+    text-align:center;
+}
+
+.panel::before{
+    content:'';
+    position:absolute;
+    left:14%;
+    right:14%;
+    top:0;
+    height:1px;
+    background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+}
+
+h1{
+    font-size:26px;
+    font-weight:bold;
+    margin-bottom:10px;
+    letter-spacing:.2px;
+}
+
+.lead{
+    font-size:14.5px;
+    color:var(--muted);
+    line-height:2.1;
+    margin-bottom:24px;
+}
+
+#nameInput{
+    width:100%;
+    height:62px;
+    border-radius:18px;
+    border:1px solid var(--stroke);
+    background:rgba(0,0,0,.28);
+    color:var(--text);
+    font-family:inherit;
+    font-size:19px;
+    text-align:center;
+    padding:0 16px;
+    outline:none;
+    transition:border-color .2s, background .2s;
+    margin-bottom:14px;
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.35);
+}
+
+#nameInput:focus{
+    border-color:rgba(74,222,128,.55);
+    background:rgba(0,0,0,.38);
+}
+
+.note{
+    font-size:12.5px;
+    color:var(--dim);
+    line-height:2;
+    margin-top:20px;
+}
+
+/* ============================================================
+   قاب درس و امتحان
+   ============================================================ */
+
+#frame{
+    flex:1;
+    width:100%;
+    border:none;
+    background:#080c12;
+    display:block;
+}
+
+/* ============================================================
+   کارنامه
+   ============================================================ */
+
+#repBody{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:24px 18px 44px;
+}
+
+.sum{
+    position:relative;
+    background:linear-gradient(180deg, rgba(74,222,128,.16), rgba(74,222,128,.05));
+    border:1px solid rgba(74,222,128,.30);
+    border-radius:28px;
+    padding:28px 22px;
+    margin-bottom:18px;
+    text-align:center;
+    backdrop-filter:blur(24px) saturate(160%);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.18);
+    overflow:hidden;
+}
+
+.sum::before{
+    content:'';
+    position:absolute;
+    left:16%;
+    right:16%;
+    top:0;
+    height:1px;
+    background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.6), rgba(255,255,255,0));
+}
+
+.sum .big{
+    font-size:56px;
+    font-weight:bold;
+    color:#7cf0a6;
+    line-height:1.15;
+    text-shadow:0 6px 26px rgba(74,222,128,.45);
+}
+
+.sum .lbl{
+    font-size:13.5px;
+    color:#9fb3c4;
+    margin-top:8px;
+}
+
+.item{
+    position:relative;
+    background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.03));
+    border:1px solid var(--stroke);
+    border-radius:22px;
+    padding:18px 20px;
+    margin-bottom:12px;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    box-shadow:0 14px 34px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.item .top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:8px;
+}
+
+.item .sc{
+    font-size:19px;
+    font-weight:bold;
+    color:var(--text);
+}
+
+.item .sc em{
+    font-style:normal;
+    color:#7cf0a6;
+}
+
+.item .dt{
+    font-size:12.5px;
+    color:var(--dim);
+    text-align:left;
+}
+
+.item .wr{
+    font-size:13px;
+    color:var(--muted);
+    line-height:2;
+}
+
+.empty{
+    text-align:center;
+    color:var(--muted);
+    font-size:15.5px;
+    padding:70px 24px;
+    line-height:2.3;
+}
+
+#sendMsg{
+    text-align:center;
+    font-size:14px;
+    margin-top:16px;
+    min-height:24px;
+    color:var(--muted);
+    line-height:1.9;
+}
+
+/* ============================================================
+   تنظیمات
+   ============================================================ */
+
+#setBody{
+    flex:1;
+    overflow-y:auto;
+    padding:24px 18px 44px;
+}
+
+.field{
+    position:relative;
+    background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.03));
+    border:1px solid var(--stroke);
+    border-radius:24px;
+    padding:22px;
+    margin-bottom:16px;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    box-shadow:0 14px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.field label{
+    display:block;
+    font-size:15px;
+    font-weight:bold;
+    margin-bottom:14px;
+    color:var(--text);
+}
+
+.inp{
+    width:100%;
+    min-height:58px;
+    border-radius:16px;
+    border:1px solid var(--stroke);
+    background:rgba(0,0,0,.28);
+    color:var(--text);
+    font-family:inherit;
+    font-size:16px;
+    padding:14px 16px;
+    outline:none;
+    transition:border-color .2s;
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.35);
+}
+
+.inp:focus{ border-color:rgba(74,222,128,.55); }
+
+.inp.ltr{
+    direction:ltr;
+    text-align:left;
+    font-size:13px;
+    word-break:break-all;
+}
+
+.tiny{
+    font-size:12.5px;
+    color:var(--dim);
+    line-height:2.1;
+    margin-top:12px;
+}
+
+.danger{
+    border-color:rgba(224,130,95,.4);
+    color:#ffb08a;
+    background:linear-gradient(180deg, rgba(224,130,95,.14), rgba(224,130,95,.05));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+.danger:active{ background:rgba(224,130,95,.22); }
+
+/* ============================================================
+   کوچک
+   ============================================================ */
+
+@media (max-height:720px){
+    .hdr{ height:66px; }
+    .brand img{ width:46px; height:46px; }
+    .hero img{ width:150px; height:150px; }
+    .hero::before{ width:210px; height:210px; }
+    .body{ padding:20px 15px 34px; }
+    .card{ padding:20px; border-radius:24px; }
+    .card h2{ font-size:19px; }
+    .btn{ min-height:54px; font-size:16px; }
+    h1{ font-size:22px; }
+    .sum .big{ font-size:46px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+    <!-- ============================================================
+         پروفایل — فقط بار اول
+         ============================================================ -->
+    <section id="scProfile" class="screen show">
+        <div class="center">
+
+            <div class="hero">
+                <img src="https://raw.githubusercontent.com/lesehawio/comi/main/comi1.png" alt="کامی">
+            </div>
+
+            <div class="panel">
+                <h1>خوش آمدی</h1>
+                <p class="lead">
+                    یک بار اسمت را بنویس.<br>
+                    از این به بعد نمره‌هایت با همین اسم ثبت می‌شود.
+                </p>
+                <input id="nameInput" type="text" placeholder="اسمت" autocomplete="off" spellcheck="false">
+                <button id="saveName" class="btn solid">ذخیره و ادامه</button>
+                <p class="note">این اطلاعات فقط روی همین گوشی ذخیره می‌شود.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================
+         منو
+         ============================================================ -->
+    <section id="scMenu" class="screen">
+        <header class="hdr">
+            <div class="brand">
+                <img src="https://raw.githubusercontent.com/lesehawio/comi/main/comi1.png" alt="کامی">
+                کامی
+            </div>
+            <div class="spacer"></div>
+            <button class="prof" id="profChip">
+                <b id="profLetter">؟</b>
+                <span id="profName">—</span>
+            </button>
+        </header>
+
+        <div class="body">
+
+            <div class="secLabel">درس</div>
+
+            <div class="card">
+                <span class="tag">درس</span>
+                <h2 id="lessonTitle">—</h2>
+                <p id="lessonSub">—</p>
+                <button class="btn solid" id="openLesson">شروع درس</button>
+            </div>
+
+            <div class="secLabel">امتحان</div>
+
+            <div class="card">
+                <span class="tag amber">امتحان</span>
+                <h2 id="examTitle">—</h2>
+                <p id="examSub">—</p>
+                <button class="btn amber" id="openExam">شروع امتحان</button>
+            </div>
+
+            <div class="secLabel">نتیجه</div>
+
+            <div class="card slim">
+                <div style="flex:1;min-width:0">
+                    <div class="k">کارنامه</div>
+                    <div class="v" id="repSummary">هنوز امتحانی نداده‌ای</div>
+                </div>
+                <button class="ghost" id="openReport">دیدن</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================
+         نمایش درس یا امتحان — در همین پنجره
+         ============================================================ -->
+    <section id="scView" class="screen">
+        <header class="hdr">
+            <button class="icon" id="viewBack" title="برگشت">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+            <div class="ht" id="viewTitle">—</div>
+            <div class="spacer" style="flex:0 0 48px"></div>
+        </header>
+        <iframe id="frame" title="محتوا"></iframe>
+    </section>
+
+    <!-- ============================================================
+         کارنامه
+         ============================================================ -->
+    <section id="scReport" class="screen">
+        <header class="hdr">
+            <button class="icon" id="repBack" title="برگشت">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+            <div class="ht">کارنامه</div>
+            <div class="spacer" style="flex:0 0 48px"></div>
+        </header>
+        <div id="repBody"></div>
+    </section>
+
+    <!-- ============================================================
+         تنظیمات
+         ============================================================ -->
+    <section id="scSet" class="screen">
+        <header class="hdr">
+            <button class="icon" id="setBack" title="برگشت">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+            <div class="ht">تنظیمات</div>
+            <div class="spacer" style="flex:0 0 48px"></div>
+        </header>
+
+        <div id="setBody">
+
+            <div class="field">
+                <label>اسم</label>
+                <input id="setName" class="inp" type="text" placeholder="اسمت" autocomplete="off">
+                <button class="btn" id="setNameSave" style="margin-top:14px">ذخیره‌ی اسم</button>
+            </div>
+
+            <div class="field">
+                <label>آدرس گوگل‌شیت (برای ثبت نمره‌ها)</label>
+                <input id="setSheet" class="inp ltr" type="text" placeholder="https://script.google.com/macros/s/..../exec" spellcheck="false" autocomplete="off">
+                <button class="btn" id="setSheetSave" style="margin-top:14px">ذخیره‌ی آدرس</button>
+                <div class="tiny">
+                    آدرس باید آخرش <b>/exec</b> داشته باشد.<br>
+                    تست: آن را در مرورگر باز کن — باید بنویسد <b>ok</b>.
+                </div>
+            </div>
+
+            <div class="field">
+                <label>کارنامه</label>
+                <button class="btn danger" id="setClear">پاک کردن همه‌ی نمره‌ها</button>
+            </div>
+
+            <div id="setMsg" class="tiny" style="text-align:center"></div>
+
+        </div>
+    </section>
+
+</div>
+
+<script>
+/* ============================================================
+   ۱) تنظیمات — نقطه‌ی اتصال به درس و امتحان
+   ============================================================ */
+
+var LESSON_FILE  = '1-1.html';
+var LESSON_TITLE = 'اجزای کامپیوتر';
+var LESSON_SUB   = 'کیس • مانیتور • ماوس • کیبورد • پاور • USB • هدفون';
+
+var EXAM_FILE    = 'e-1.html';
+var EXAM_TITLE   = 'امتحان ۱';
+var EXAM_SUB     = '۸ سؤال چهارگزینه‌ای';
+
+/* ============================================================
+   ۲) ذخیره‌سازی
+   ============================================================ */
+
+/* این کلید باید با exam.js یکی باشد تا کارنامه نمره‌ها را ببیند */
+var KEY = 'kami_level1_v1';
+
+var SHEET_DEFAULT = 'https://script.google.com/macros/s/AKfycbwd2ChqHgFegDsXwSna1NWVTVWWbS0QPrnDX_YKwkbcmz6SnywstZBP1Vq07HOtiPZR/exec';
+
+var OLD_SHEET_URLS = [
+    'https://script.google.com/macros/s/AKfycbwbQJj5T-ORFGGMiELpGoM97dsZrBtX3xST9Y9W8U0nZjCjneBsehAV4Mleok2ql5Xz/exec'
+];
+
+var ST = { name:'', scores:[], sheet:SHEET_DEFAULT };
+
+function loadState(){
+    try{
+        var raw = localStorage.getItem(KEY);
+        if(raw){
+            var o = JSON.parse(raw);
+            if(o && typeof o === 'object'){
+                ST.name   = o.name   || '';
+                ST.scores = o.scores || [];
+                if(!o.sheet || OLD_SHEET_URLS.indexOf(o.sheet) >= 0){
+                    ST.sheet = SHEET_DEFAULT;
+                } else {
+                    ST.sheet = o.sheet;
+                }
+            }
+        }
+    }catch(e){}
+}
+
+function saveState(){
+    try{ localStorage.setItem(KEY, JSON.stringify(ST)); }catch(e){}
+}
+
+/* ============================================================
+   ۳) ابزار
+   ============================================================ */
+
+var FA = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+
+function fa(n){ return String(n).replace(/[0-9]/g, function(d){ return FA[+d]; }); }
+
+function el(id){ return document.getElementById(id); }
+
+function vibrate(p){
+    if(navigator.vibrate){ try{ navigator.vibrate(p); }catch(e){} }
+}
+
+function escapeHtml(s){
+    return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+}
+
+function show(which){
+    var all = document.querySelectorAll('.screen');
+    for(var k=0;k<all.length;k++){ all[k].classList.remove('show'); }
+    el(which).classList.add('show');
+}
+
+function initialOf(name){
+    var s = String(name || '').trim();
+    return s ? s.charAt(0) : '؟';
+}
+
+/* ============================================================
+   ۴) پروفایل
+   ============================================================ */
+
+var NAME_LOCK = false;
+
+function saveName(v){
+
+    v = String(v || '').trim();
+
+    if(!v){
+        var inp = el('nameInput').offsetParent ? el('nameInput') : el('setName');
+        inp.style.borderColor = '#e0825f';
+        setTimeout(function(){ inp.style.borderColor = ''; }, 1000);
+        return false;
+    }
+
+    ST.name = v;
+    saveState();
+    NAME_LOCK = true;
+    vibrate(20);
+    return true;
+}
+
+el('saveName').onclick = function(){
+    if(saveName(el('nameInput').value)){ openMenu(); }
+};
+
+el('nameInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ el('saveName').click(); }
+});
+
+/* ============================================================
+   ۵) منو
+   ============================================================ */
+
+function paintProfile(){
+    el('profName').textContent   = ST.name || '—';
+    el('profLetter').textContent = initialOf(ST.name);
+}
+
+function openMenu(){
+
+    if(!ST.name && !NAME_LOCK){
+        el('nameInput').value = '';
+        show('scProfile');
+        return;
+    }
+
+    show('scMenu');
+
+    paintProfile();
+
+    el('lessonTitle').textContent = LESSON_TITLE;
+    el('lessonSub').textContent   = LESSON_SUB;
+    el('examTitle').textContent   = EXAM_TITLE;
+    el('examSub').textContent     = EXAM_SUB;
+
+    var n = ST.scores.length;
+
+    if(!n){
+        el('repSummary').textContent = 'هنوز امتحانی نداده‌ای';
+    } else {
+        var best = 0;
+        for(var k=0;k<n;k++){
+            if(ST.scores[k].pct > best){ best = ST.scores[k].pct; }
+        }
+        el('repSummary').textContent = 'بهترین نمره: ' + fa(best) + '٪  •  ' + fa(n) + ' بار امتحان';
+    }
+}
+
+el('profChip').onclick = function(){
+    vibrate(15);
+    openSettings();
+};
+
+/* ============================================================
+   ۶) نمایش درس یا امتحان
+   ============================================================ */
+
+function openViewer(file, title){
+    el('viewTitle').textContent = title;
+    el('frame').src = file;
+    show('scView');
+    vibrate(20);
+}
+
+el('openLesson').onclick = function(){
+    openViewer(LESSON_FILE, LESSON_TITLE);
+};
+
+el('openExam').onclick = function(){
+    openViewer(EXAM_FILE, EXAM_TITLE);
+};
+
+el('viewBack').onclick = function(){
+    el('frame').src = 'about:blank';
+    openMenu();
+};
+
+window.addEventListener('message', function(e){
+    if(e.data && e.data.kami === 'home'){
+        el('frame').src = 'about:blank';
+        openMenu();
+    }
+});
+
+/* ============================================================
+   ۷) کارنامه
+   ============================================================ */
+
+function openReport(){
+    show('scReport');
+
+    if(!ST.scores.length){
+        el('repBody').innerHTML =
+            '<div class="empty">هنوز امتحانی نداده‌ای.<br>از منو، «شروع امتحان» را بزن.</div>';
+        return;
+    }
+
+    var h = '';
+    var best = 0;
+
+    for(var k=0;k<ST.scores.length;k++){
+        if(ST.scores[k].pct > best){ best = ST.scores[k].pct; }
+    }
+
+    h += '<div class="sum">';
+    h +=   '<div class="big">' + fa(best) + '٪</div>';
+    h +=   '<div class="lbl">بهترین نمره &nbsp;•&nbsp; ' + escapeHtml(ST.name) + '</div>';
+    h += '</div>';
+
+    for(var j=ST.scores.length-1;j>=0;j--){
+
+        var r = ST.scores[j];
+
+        h += '<div class="item">';
+        h +=   '<div class="top">';
+        h +=     '<span class="sc"><em>' + fa(r.score) + '</em> / ' + fa(r.total) + '</span>';
+        h +=     '<span class="dt">' + escapeHtml(r.date) + '</span>';
+        h +=   '</div>';
+
+        if(r.wrong && r.wrong.length){
+            h += '<div class="wr">اشتباه‌ها:<br>';
+            for(var w=0;w<r.wrong.length;w++){
+                h += '• ' + escapeHtml(r.wrong[w]) + '<br>';
+            }
+            h += '</div>';
+        } else {
+            h += '<div class="wr">همه را درست زدی</div>';
+        }
+
+        h += '</div>';
+    }
+
+    h += '<button class="btn solid" id="repSend" style="margin-top:12px">فرستادن نمره‌ها به گوگل‌شیت</button>';
+    h += '<div id="sendMsg"></div>';
+
+    el('repBody').innerHTML = h;
+    el('repSend').onclick = sendAll;
+}
+
+el('repBack').onclick = openMenu;
+
+/* ============================================================
+   ۸) ارسال به گوگل‌شیت
+   ============================================================ */
+
+function setMsg(text, color){
+    var m = el('sendMsg');
+    if(m){ m.textContent = text; m.style.color = color || '#8a97a8'; }
+}
+
+function payloadOf(rec){
+    return {
+        name:  ST.name || '(بی‌نام)',
+        date:  rec.date,
+        exam:  rec.exam || EXAM_TITLE,
+        score: rec.score,
+        total: rec.total,
+        pct:   rec.pct,
+        wrong: (rec.wrong || []).join(' | ')
+    };
+}
+
+function postToSheet(payload){
+    return fetch(ST.sheet, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+    }).then(function(){ return 'sent'; });
+}
+
+function sendAll(){
+    if(!ST.sheet){
+        setMsg('اول آدرس گوگل‌شیت را در تنظیمات بگذار.', '#ecc98a');
+        return;
+    }
+    setMsg('دارم می‌فرستم...', '#8a97a8');
+
+    var jobs = [];
+    for(var k=0;k<ST.scores.length;k++){
+        jobs.push(postToSheet(payloadOf(ST.scores[k])));
+    }
+
+    Promise.all(jobs).then(function(){
+        setMsg(fa(jobs.length) + ' نمره فرستاده شد. شیت را نگاه کن.', '#7cf0a6');
+        vibrate([25,35,25]);
+    }).catch(function(){
+        setMsg('نشد بفرستم. اینترنت را چک کن.', '#ffb08a');
+    });
+}
+
+/* ============================================================
+   ۹) تنظیمات
+   ============================================================ */
+
+function openSettings(){
+    el('setName').value  = ST.name || '';
+    el('setSheet').value = ST.sheet || '';
+    el('setMsg').textContent = '';
+    show('scSet');
+}
+
+el('setBack').onclick = openMenu;
+
+el('setNameSave').onclick = function(){
+    if(saveName(el('setName').value)){
+        el('setMsg').textContent = 'اسم ذخیره شد';
+        el('setMsg').style.color = '#7cf0a6';
+        paintProfile();
+    } else {
+        el('setMsg').textContent = 'اسم را بنویس';
+        el('setMsg').style.color = '#ffb08a';
+    }
+};
+
+el('setSheetSave').onclick = function(){
+    var v = el('setSheet').value.trim();
+    ST.sheet = v;
+    saveState();
+    el('setMsg').textContent = v ? 'آدرس ذخیره شد' : 'آدرس خالی شد';
+    el('setMsg').style.color = v ? '#7cf0a6' : '#8a97a8';
+    vibrate(20);
+};
+
+el('setClear').onclick = function(){
+    if(confirm('همه‌ی نمره‌های ذخیره‌شده پاک شوند؟')){
+        ST.scores = [];
+        saveState();
+        el('setMsg').textContent = 'نمره‌ها پاک شد';
+        el('setMsg').style.color = '#ffb08a';
+    }
+};
+
+/* ============================================================
+   ۱۰) شروع
+   ============================================================ */
+
+document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+document.addEventListener('dblclick', function(e){ e.preventDefault(); }, { passive:false });
+
+loadState();
+
+if(ST.name){
+    openMenu();
+} else {
+    show('scProfile');
+}
+</script>
+
+</body>
+</html>
