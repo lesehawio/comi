@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080c12">
+<title>کامپیوتر رو بشناس — سطح ۱</title>
+<style>
+/* ============================================================
+   سطح ۱ — شناخت اجزای کامپیوتر
+   تک‌فایل • آفلاین • بدون تصویر بیرونی
+
+   برای عوض کردن درس‌ها → بخش «محتوای درس‌ها» در پایین فایل
+   ============================================================ */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    overscroll-behavior:none;
+}
+
+body{
+    font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+    color:#e8edf5;
+    direction:rtl;
+    background:
+        radial-gradient(ellipse 120% 70% at 50% 30%, #16202e 0%, #0d131c 45%, #080c12 100%);
+}
+
+#app{
+    height:100dvh;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    max-width:560px;
+    margin:0 auto;
+    position:relative;
+}
+
+/* =========================
+   نوار بالا
+   ========================= */
+
+#top{
+    flex:0 0 auto;
+    padding:14px 16px 4px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+#counter{
+    flex:0 0 auto;
+    font-size:13px;
+    color:#7d8ba0;
+    letter-spacing:.5px;
+    min-width:52px;
+    text-align:center;
+    padding:7px 8px;
+    border-radius:10px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+}
+
+#dots{
+    flex:1;
+    display:flex;
+    gap:5px;
+}
+
+#dots i{
+    flex:1;
+    height:5px;
+    border-radius:3px;
+    background:#1e2733;
+    transition:background .35s ease, box-shadow .35s ease;
+}
+
+#dots i.done{ background:#35845c; }
+#dots i.now{
+    background:#4ade80;
+    box-shadow:0 0 9px rgba(74,222,128,.8);
+}
+
+#replay{
+    flex:0 0 auto;
+    width:44px;
+    height:44px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.045);
+    color:#8b97a8;
+    font-size:19px;
+    cursor:pointer;
+    transition:transform .12s ease, background .2s;
+}
+
+#replay:active{
+    transform:scale(.92);
+    background:rgba(255,255,255,.1);
+}
+
+/* =========================
+   صحنه
+   ========================= */
+
+#stage{
+    flex:1 1 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px 8px 0;
+    min-height:0;
+    position:relative;
+}
+
+#scene{
+    width:100%;
+    height:100%;
+    touch-action:manipulation;
+    overflow:visible;
+}
+
+#scene g.part{ transition:opacity .4s ease; }
+
+/* حالت تمرکز: بقیه محو */
+#scene.focusing g.part{ opacity:.22; }
+
+#scene.focusing g.part.spot{
+    opacity:1;
+    filter:drop-shadow(0 0 11px rgba(74,222,128,.95));
+    transform-box:fill-box;
+    transform-origin:center;
+    animation:spotPulse 1.7s ease-in-out infinite;
+}
+
+@keyframes spotPulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.055); }
+}
+
+#scene g.part.hit{
+    filter:drop-shadow(0 0 15px rgba(74,222,128,1));
+}
+
+#scene g.part.hint{
+    animation:hintPulse 1.1s ease-in-out infinite;
+}
+
+@keyframes hintPulse{
+    0%,100%{ opacity:.35; }
+    50%{ opacity:1; }
+}
+
+/* مانیتور: صفحه خاموش / دسکتاپ روشن */
+#desktop{
+    opacity:0;
+    transition:opacity .9s ease .15s;
+}
+
+#scene.on #desktop{ opacity:1; }
+
+#caseGlow{
+    opacity:0;
+    transition:opacity .9s ease;
+}
+
+#scene.on #caseGlow{ opacity:1; }
+
+#led{
+    fill:#3d4553;
+    transition:fill .5s ease;
+}
+
+#scene.on #led{
+    fill:#4ade80;
+    filter:drop-shadow(0 0 4px rgba(74,222,128,1));
+}
+
+#powerIconPath, #powerIconArc{
+    stroke:#7d8ba0;
+    transition:stroke .5s ease;
+}
+
+#scene.on #powerIconPath,
+#scene.on #powerIconArc{
+    stroke:#4ade80;
+}
+
+/* دست راهنما */
+#hintHand{
+    opacity:0;
+    transition:opacity .3s ease;
+    pointer-events:none;
+}
+
+#hintHand.show{ opacity:1; }
+
+#hintHand.show #hintBounce{
+    animation:bounceY .95s ease-in-out infinite;
+}
+
+@keyframes bounceY{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-7px); }
+}
+
+/* لرزش */
+#scene.shake{ animation:shakeIt .42s ease; }
+
+@keyframes shakeIt{
+    0%,100%{ transform:translateX(0); }
+    18%{ transform:translateX(-8px); }
+    38%{ transform:translateX(8px); }
+    58%{ transform:translateX(-5px); }
+    78%{ transform:translateX(5px); }
+}
+
+/* =========================
+   پنل پایین
+   ========================= */
+
+#panel{
+    flex:0 0 auto;
+    background:linear-gradient(180deg,#161d28,#10161f);
+    border-top:1px solid rgba(255,255,255,.07);
+    border-radius:24px 24px 0 0;
+    padding:20px 18px 22px;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom));
+    box-shadow:0 -12px 34px rgba(0,0,0,.45);
+}
+
+#panelInner{ animation:slideUp .34s ease; }
+
+@keyframes slideUp{
+    from{ opacity:0; transform:translateY(12px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+#title{
+    font-size:23px;
+    font-weight:bold;
+    color:#4ade80;
+    margin-bottom:9px;
+    line-height:1.3;
+}
+
+#text{
+    font-size:17.5px;
+    line-height:1.8;
+    color:#c6d0de;
+    min-height:56px;
+}
+
+#actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    flex:1;
+    min-width:118px;
+    min-height:64px;
+    border-radius:17px;
+    background:rgba(255,255,255,.06);
+    color:#e8edf5;
+    font-family:inherit;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,.09);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .12s ease, background .2s ease;
+    padding:8px;
+}
+
+.btn:active{
+    transform:scale(.955);
+    background:rgba(255,255,255,.11);
+}
+
+.btn.main{
+    background:linear-gradient(180deg,#45c97f,#2e9c5c);
+    border-color:#5ee393;
+    color:#05200f;
+    box-shadow:0 8px 22px rgba(74,222,128,.28);
+}
+
+.btn.chip{
+    flex:0 0 auto;
+    min-width:0;
+    min-height:50px;
+    font-size:15.5px;
+    padding:0 15px;
+    border-radius:14px;
+}
+
+.btn.chip.on{
+    background:linear-gradient(180deg,#45c97f,#2e9c5c);
+    border-color:#5ee393;
+    color:#05200f;
+}
+
+/* دکمه‌ی شروع */
+#startBig{
+    width:196px;
+    height:196px;
+    border-radius:50%;
+    border:3px solid #4ade80;
+    background:radial-gradient(circle at 50% 38%,#204434,#0d1a14 70%);
+    color:#4ade80;
+    font-family:inherit;
+    font-size:27px;
+    font-weight:bold;
+    cursor:pointer;
+    animation:breathe 2.4s ease-in-out infinite;
+    transition:transform .12s ease;
+}
+
+@keyframes breathe{
+    0%,100%{
+        box-shadow:0 0 32px rgba(74,222,128,.28), inset 0 0 22px rgba(74,222,128,.12);
+    }
+    50%{
+        box-shadow:0 0 62px rgba(74,222,128,.6), inset 0 0 32px rgba(74,222,128,.22);
+    }
+}
+
+#startBig:active{ transform:scale(.95); }
+
+/* =========================
+   انیمیشن تأیید
+   ========================= */
+
+#burst{
+    position:fixed;
+    inset:0;
+    display:none;
+    place-items:center;
+    pointer-events:none;
+    z-index:50;
+}
+
+#burst.go{ display:grid; }
+
+#burst .ring{
+    width:132px;
+    height:132px;
+    border-radius:50%;
+    border:5px solid #4ade80;
+    animation:ringOut .8s cubic-bezier(.2,.7,.3,1) forwards;
+}
+
+@keyframes ringOut{
+    from{ transform:scale(.32); opacity:.95; }
+    to{ transform:scale(3.1); opacity:0; }
+}
+
+#burst .ok{
+    position:absolute;
+    font-size:80px;
+    color:#4ade80;
+    text-shadow:0 0 30px rgba(74,222,128,.95);
+    animation:popOk .85s ease-out forwards;
+}
+
+@keyframes popOk{
+    0%{ transform:scale(.3); opacity:0; }
+    42%{ transform:scale(1.22); opacity:1; }
+    100%{ transform:scale(1); opacity:0; }
+}
+
+/* ستاره‌های پایان */
+.star{
+    position:fixed;
+    font-size:26px;
+    pointer-events:none;
+    z-index:60;
+    animation:starFly 1.5s ease-out forwards;
+}
+
+@keyframes starFly{
+    0%{ transform:translate(0,0) scale(.4); opacity:1; }
+    100%{ transform:translate(var(--dx),var(--dy)) scale(1.25); opacity:0; }
+}
+
+/* =========================
+   صفحه‌ی کوچک
+   ========================= */
+
+@media (max-height:700px){
+    #title{ font-size:20px; }
+    #text{ font-size:15.5px; min-height:46px; line-height:1.7; }
+    .btn{ min-height:56px; font-size:16.5px; }
+    .btn.chip{ min-height:46px; font-size:14.5px; }
+    #startBig{ width:156px; height:156px; font-size:22px; }
+    #panel{ padding:16px 16px 18px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+    <div id="top">
+        <div id="counter">۰ / ۰</div>
+        <div id="dots"></div>
+        <button id="replay" title="دوباره">🔁</button>
+    </div>
+
+    <div id="stage">
+        <!-- ============================================================
+             صحنه‌ی میز کامپیوتر — هر قطعه یک data-part دارد
+             ============================================================ -->
+        <svg id="scene" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <linearGradient id="gCase" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#414a5a"/>
+                    <stop offset=".5" stop-color="#262d38"/>
+                    <stop offset="1" stop-color="#171c24"/>
+                </linearGradient>
+                <linearGradient id="gPanel" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#2b333f"/>
+                    <stop offset="1" stop-color="#1e242e"/>
+                </linearGradient>
+                <linearGradient id="gMon" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#333b48"/>
+                    <stop offset="1" stop-color="#1b212a"/>
+                </linearGradient>
+                <linearGradient id="gScrOff" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#0c1622"/>
+                    <stop offset="1" stop-color="#101d2e"/>
+                </linearGradient>
+                <linearGradient id="gDesk" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#1d4f7a"/>
+                    <stop offset="1" stop-color="#123449"/>
+                </linearGradient>
+                <linearGradient id="gKey" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#333b48"/>
+                    <stop offset="1" stop-color="#20262f"/>
+                </linearGradient>
+                <linearGradient id="gMouse" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#414a5a"/>
+                    <stop offset="1" stop-color="#232a34"/>
+                </linearGradient>
+                <radialGradient id="gGlow">
+                    <stop offset="0" stop-color="#4ade80" stop-opacity=".55"/>
+                    <stop offset="1" stop-color="#4ade80" stop-opacity="0"/>
+                </radialGradient>
+                <pattern id="pKeys" width="14" height="11" patternUnits="userSpaceOnUse">
+                    <rect x="1" y="1" width="12" height="9" rx="2" fill="#2b333f"/>
+                </pattern>
+                <filter id="fShadow" x="-60%" y="-60%" width="220%" height="220%">
+                    <feGaussianBlur stdDeviation="3.4"/>
+                </filter>
+            </defs>
+
+            <!-- ================= میز ================= -->
+            <rect x="0" y="222" width="400" height="78" fill="#121924"/>
+            <rect x="0" y="222" width="400" height="1.6" fill="#2b3644"/>
+
+            <!-- هاله‌ی روشن شدن کیس -->
+            <ellipse id="caseGlow" cx="61" cy="158" rx="82" ry="104" fill="url(#gGlow)"/>
+
+            <!-- ================= سایه‌ها ================= -->
+            <ellipse cx="61"  cy="225" rx="42" ry="5" fill="#000" opacity=".55" filter="url(#fShadow)"/>
+            <ellipse cx="236" cy="225" rx="54" ry="5" fill="#000" opacity=".55" filter="url(#fShadow)"/>
+            <ellipse cx="220" cy="279" rx="90" ry="5" fill="#000" opacity=".5"  filter="url(#fShadow)"/>
+            <ellipse cx="344" cy="278" rx="26" ry="4.5" fill="#000" opacity=".5" filter="url(#fShadow)"/>
+
+            <!-- ================= کیس ================= -->
+            <g data-part="case" class="part">
+                <rect x="24" y="96" width="74" height="126" rx="7" fill="url(#gCase)" stroke="#080b10" stroke-width="1.5"/>
+                <rect x="30" y="102" width="62" height="114" rx="5" fill="url(#gPanel)" stroke="#141a22" stroke-width="1"/>
+                <line x1="36" y1="196" x2="86" y2="196" stroke="#1a2029" stroke-width="1.4"/>
+                <line x1="36" y1="201" x2="86" y2="201" stroke="#1a2029" stroke-width="1.4"/>
+                <line x1="36" y1="206" x2="86" y2="206" stroke="#1a2029" stroke-width="1.4"/>
+                <rect x="24" y="96" width="74" height="126" rx="7" fill="transparent" pointer-events="all"/>
+            </g>
+
+            <!-- ================= مانیتور ================= -->
+            <g data-part="monitor" class="part">
+                <rect x="152" y="68" width="168" height="116" rx="9" fill="url(#gMon)" stroke="#080b10" stroke-width="1.5"/>
+                <rect x="161" y="77" width="150" height="98" rx="4" fill="url(#gScrOff)"/>
+
+                <!-- دسکتاپ (فقط وقتی روشن شد) -->
+                <g id="desktop">
+                    <rect x="161" y="77" width="150" height="98" rx="4" fill="url(#gDesk)"/>
+                    <rect x="161" y="163" width="150" height="12" fill="#0d1a28" opacity=".92"/>
+                    <circle cx="170" cy="169" r="3.6" fill="#4ade80"/>
+                    <rect x="180" y="166" width="13" height="6" rx="1.5" fill="#3a5f8a"/>
+                    <rect x="197" y="166" width="13" height="6" rx="1.5" fill="#3a5f8a"/>
+                    <rect x="169" y="87" width="16" height="13" rx="2.5" fill="#6aa8e0"/>
+                    <rect x="169" y="105" width="16" height="13" rx="2.5" fill="#e0b96a"/>
+                    <rect x="169" y="123" width="16" height="13" rx="2.5" fill="#7fd07f"/>
+                    <rect x="196" y="93" width="104" height="62" rx="3.5" fill="#eef3f9"/>
+                    <rect x="196" y="93" width="104" height="11" rx="3.5" fill="#c6d0dc"/>
+                    <circle cx="291" cy="98.5" r="2.4" fill="#e0655f"/>
+                    <rect x="204" y="112" width="70" height="4" rx="2" fill="#cdd7e2"/>
+                    <rect x="204" y="121" width="52" height="4" rx="2" fill="#dbe3ec"/>
+                    <rect x="204" y="130" width="62" height="4" rx="2" fill="#dbe3ec"/>
+                </g>
+
+                <rect x="228" y="184" width="16" height="30" fill="#262d38"/>
+                <rect x="196" y="213" width="80" height="9" rx="4.5" fill="#262d38"/>
+                <rect x="152" y="68" width="168" height="116" rx="9" fill="transparent" pointer-events="all"/>
+            </g>
+
+            <!-- ================= کیبورد ================= -->
+            <g data-part="keyboard" class="part">
+                <rect x="136" y="234" width="168" height="42" rx="7" fill="url(#gKey)" stroke="#080b10" stroke-width="1.5"/>
+                <rect x="142" y="240" width="156" height="29" rx="4" fill="url(#pKeys)"/>
+                <rect x="198" y="270" width="44" height="4" rx="2" fill="#3a4453"/>
+            </g>
+
+            <!-- ================= ماوس ================= -->
+            <g data-part="mouse" class="part">
+                <path d="M344 228 C344 220 351 212 356 206" fill="none" stroke="#1b212a" stroke-width="2.4" stroke-linecap="round"/>
+                <ellipse cx="344" cy="250" rx="18" ry="25" fill="url(#gMouse)" stroke="#080b10" stroke-width="1.5"/>
+                <line x1="344" y1="228" x2="344" y2="275" stroke="#151a22" stroke-width="1.4"/>
+                <rect x="340" y="234" width="8" height="15" rx="4" fill="#586576"/>
+                <ellipse cx="344" cy="250" rx="32" ry="36" fill="transparent" pointer-events="all"/>
+            </g>
+
+            <!-- ================= دکمه‌ی پاور ================= -->
+            <g data-part="power" class="part">
+                <circle cx="82" cy="118" r="10" fill="#2b333f" stroke="#4a5462" stroke-width="1.5"/>
+                <path id="powerIconPath" d="M82 112.2 L82 118" stroke="#7d8ba0" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                <path id="powerIconArc" d="M77.4 114.4 A5.6 5.6 0 1 0 86.6 114.4" fill="none" stroke="#7d8ba0" stroke-width="1.8" stroke-linecap="round"/>
+                <circle id="led" cx="82" cy="101" r="2.7"/>
+                <circle cx="82" cy="118" r="25" fill="transparent" pointer-events="all"/>
+            </g>
+
+            <!-- ================= پورت USB ================= -->
+            <g data-part="usb" class="part">
+                <rect x="38" y="136" width="23" height="10" rx="2" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                <rect x="42" y="139" width="15" height="4" rx="1" fill="#556273"/>
+                <rect x="30" y="128" width="39" height="26" rx="4" fill="transparent" pointer-events="all"/>
+            </g>
+
+            <!-- ================= جک هدفون ================= -->
+            <g data-part="jack" class="part">
+                <circle cx="49" cy="180" r="6.8" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                <circle cx="49" cy="180" r="2.7" fill="#04060a"/>
+                <circle cx="49" cy="180" r="21" fill="transparent" pointer-events="all"/>
+            </g>
+
+            <!-- دست راهنما -->
+            <g id="hintHand">
+                <g id="hintBounce">
+                    <text x="0" y="0" font-size="26" text-anchor="middle">👇</text>
+                </g>
+            </g>
+
+        </svg>
+    </div>
+
+    <div id="panel">
+        <div id="panelInner">
+            <div id="title"></div>
+            <div id="text"></div>
+            <div id="actions"></div>
+        </div>
+    </div>
+
+</div>
+
+<div id="burst"></div>
+
+<script>
+/* ============================================================
+   ۱) محتوای درس‌ها — فقط همین بخش را عوض کن
+   ============================================================ */
+
+/* هر قطعه: [اسم، یک جمله توضیح] */
+var PARTS = {
+    case:     ['کیس',        'همه‌ی کارای کامپیوتر توش انجام می‌شه. مثل مغز.'],
+    monitor:  ['مانیتور',    'نتیجه‌ی کارت رو نشون می‌ده. مثل صورت.'],
+    mouse:    ['ماوس',       'با این می‌گی کجا بره. مثل دست.'],
+    keyboard: ['کیبورد',     'با این حرف می‌نویسی. مثل دهن.'],
+    power:    ['دکمه‌ی پاور', 'اینجا رو می‌زنی، کامپیوتر روشن می‌شه.'],
+    usb:      ['پورت USB',   'فلش مموری اینجا می‌ره.'],
+    jack:     ['جک هدفون',   'هدفون رو اینجا می‌زنی.']
+};
+
+/* محل دست راهنما روی صحنه */
+var HINT_POS = {
+    case:     [61, 84],
+    monitor:  [236, 58],
+    mouse:    [344, 212],
+    keyboard: [220, 226],
+    power:    [82, 88],
+    usb:      [49, 118],
+    jack:     [49, 154]
+};
+
+/* ترتیب درس‌ها */
+var LESSON = [
+    { t:'intro' },
+
+    { t:'teach', part:'case'     },
+    { t:'teach', part:'monitor'  },
+    { t:'teach', part:'mouse'    },
+    { t:'teach', part:'keyboard' },
+
+    { t:'find',  part:'mouse',    ask:'ماوس رو پیدا کن'    },
+    { t:'find',  part:'case',     ask:'کیس رو پیدا کن'     },
+    { t:'find',  part:'keyboard', ask:'کیبورد رو پیدا کن'  },
+    { t:'find',  part:'monitor',  ask:'مانیتور رو پیدا کن' },
+
+    { t:'name',  part:'mouse'    },
+    { t:'name',  part:'monitor'  },
+
+    { t:'teach', part:'power'    },
+    { t:'teach', part:'usb'      },
+    { t:'teach', part:'jack'     },
+
+    { t:'find',  part:'power',    ask:'دکمه‌ی پاور رو پیدا کن' },
+    { t:'find',  part:'usb',      ask:'پورت USB رو پیدا کن'   },
+
+    { t:'final'  },
+    { t:'recap'  }
+];
+
+/* ============================================================
+   ۲) موتور برنامه — لازم نیست دست بزنی
+   ============================================================ */
+
+var scene    = document.getElementById('scene');
+var dotsEl   = document.getElementById('dots');
+var countEl  = document.getElementById('counter');
+var titleEl  = document.getElementById('title');
+var textEl   = document.getElementById('text');
+var actEl    = document.getElementById('actions');
+var burstEl  = document.getElementById('burst');
+var panelIn  = document.getElementById('panelInner');
+var handEl   = document.getElementById('hintHand');
+var stageEl  = document.getElementById('stage');
+
+var i = 0;
+var wrongCount = 0;
+var lock = false;
+
+var FA = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+
+function fa(n){
+    return String(n).replace(/[0-9]/g, function(d){ return FA[+d]; });
+}
+
+function vibrate(p){
+    if(navigator.vibrate){ try{ navigator.vibrate(p); }catch(e){} }
+}
+
+function partEl(name){
+    return scene.querySelector('[data-part="' + name + '"]');
+}
+
+/* بالا رفتن از درخت DOM تا رسیدن به قطعه */
+function findPart(node){
+    while(node && node !== scene){
+        if(node.getAttribute && node.getAttribute('data-part')){
+            return node;
+        }
+        node = node.parentNode;
+    }
+    return null;
+}
+
+function clearMarks(){
+    var all = scene.querySelectorAll('.part');
+    for(var k=0;k<all.length;k++){
+        all[k].classList.remove('spot','hit','hint');
+    }
+    scene.classList.remove('focusing','shake');
+    handEl.classList.remove('show');
+}
+
+function hideHand(){
+    handEl.classList.remove('show');
+}
+
+function showHand(part){
+    var p = HINT_POS[part];
+    if(!p) return;
+    handEl.setAttribute('transform','translate(' + p[0] + ',' + p[1] + ')');
+    handEl.classList.add('show');
+}
+
+function showBurst(){
+    burstEl.innerHTML = '<div class="ring"></div><div class="ok">✓</div>';
+    burstEl.classList.add('go');
+    setTimeout(function(){
+        burstEl.classList.remove('go');
+        burstEl.innerHTML = '';
+    }, 850);
+}
+
+function stars(){
+    for(var k=0;k<14;k++){
+        (function(){
+            var s = document.createElement('div');
+            s.className = 'star';
+            s.textContent = '⭐';
+            s.style.left = (20 + Math.random()*60) + '%';
+            s.style.top  = (30 + Math.random()*25) + '%';
+            s.style.setProperty('--dx', (Math.random()*300 - 150) + 'px');
+            s.style.setProperty('--dy', (Math.random()*-320 - 60) + 'px');
+            document.body.appendChild(s);
+            setTimeout(function(){ s.remove(); }, 1600);
+        })();
+    }
+}
+
+function setButtons(list){
+    actEl.innerHTML = '';
+    for(var k=0;k<list.length;k++){
+        (function(item){
+            var b = document.createElement('button');
+            b.className = 'btn' + (item.cls ? ' ' + item.cls : '');
+            b.textContent = item.label;
+            b.onclick = item.onClick;
+            actEl.appendChild(b);
+        })(list[k]);
+    }
+}
+
+function replayAnim(){
+    panelIn.style.animation = 'none';
+    void panelIn.offsetWidth;
+    panelIn.style.animation = '';
+}
+
+/* ---------------- نمایش هر مرحله ---------------- */
+
+function render(){
+    var s = LESSON[i];
+    lock = false;
+    wrongCount = 0;
+    clearMarks();
+    if(s.t !== 'recap'){ scene.classList.remove('on'); }
+    replayAnim();
+
+    /* نوار پیشرفت */
+    var html = '';
+    for(var k=0;k<LESSON.length;k++){
+        html += '<i class="' + (k < i ? 'done' : (k === i ? 'now' : '')) + '"></i>';
+    }
+    dotsEl.innerHTML = html;
+    countEl.textContent = fa(i + 1) + ' / ' + fa(LESSON.length);
+
+    /* ---------- ورود ---------- */
+    if(s.t === 'intro'){
+        titleEl.textContent = 'کامپیوتر رو بشناس';
+        textEl.textContent  = 'یه دستگاه که کارات رو راه می‌ندازه. بریم ببینیم از چی ساخته شده.';
+        actEl.innerHTML = '';
+        var big = document.createElement('button');
+        big.id = 'startBig';
+        big.textContent = 'شروع';
+        big.onclick = next;
+        actEl.appendChild(big);
+        return;
+    }
+
+    /* ---------- معرفی قطعه ---------- */
+    if(s.t === 'teach'){
+        var p = PARTS[s.part];
+        scene.classList.add('focusing');
+        partEl(s.part).classList.add('spot');
+        titleEl.textContent = p[0];
+        textEl.textContent  = p[1];
+        setButtons([{ label:'بعدی', cls:'main', onClick:next }]);
+        return;
+    }
+
+    /* ---------- پیدا کن ---------- */
+    if(s.t === 'find'){
+        titleEl.textContent = 'پیدا کن';
+        textEl.textContent  = s.ask;
+        setButtons([]);
+        return;
+    }
+
+    /* ---------- این چیه؟ ---------- */
+    if(s.t === 'name'){
+        scene.classList.add('focusing');
+        partEl(s.part).classList.add('spot');
+        titleEl.textContent = 'این چیه؟';
+        textEl.textContent  = 'روی جواب درست بزن.';
+
+        var others = [];
+        for(var key in PARTS){
+            if(key !== s.part){ others.push(key); }
+        }
+        others.sort(function(){ return Math.random() - 0.5; });
+
+        var choices = [s.part, others[0], others[1]];
+        choices.sort(function(){ return Math.random() - 0.5; });
+
+        var list = [];
+        for(var c=0;c<choices.length;c++){
+            (function(name){
+                list.push({
+                    label: PARTS[name][0],
+                    onClick: function(){
+                        if(name === s.part){ correct(partEl(name)); }
+                        else { wrongAnswer(); }
+                    }
+                });
+            })(choices[c]);
+        }
+        setButtons(list);
+        return;
+    }
+
+    /* ---------- پایان ---------- */
+    if(s.t === 'final'){
+        titleEl.textContent = 'نوبت توئه';
+        textEl.textContent  = 'دکمه‌ی پاور رو بزن و کامپیوتر رو روشن کن.';
+        setButtons([]);
+        return;
+    }
+
+    /* ---------- جمع‌بندی ---------- */
+    if(s.t === 'recap'){
+        titleEl.textContent = 'همه رو شناختی';
+        textEl.textContent  = 'روی هر کدوم بزن تا دوباره نشونت بده.';
+        var chips = [];
+        for(var kk in PARTS){
+            (function(name){
+                chips.push({
+                    label: PARTS[name][0],
+                    cls: 'chip',
+                    onClick: function(){
+                        clearMarks();
+                        scene.classList.add('focusing');
+                        partEl(name).classList.add('spot');
+                        titleEl.textContent = PARTS[name][0];
+                        textEl.textContent  = PARTS[name][1];
+                        vibrate(25);
+                    }
+                });
+            })(kk);
+        }
+        chips.push({ label:'از اول', cls:'main', onClick: function(){ i = 0; render(); } });
+        setButtons(chips);
+        return;
+    }
+}
+
+function next(){
+    if(i < LESSON.length - 1){
+        i++;
+        render();
+    }
+}
+
+/* ---------------- بازخورد ---------------- */
+
+function correct(el){
+    if(lock) return;
+    lock = true;
+    if(el){ el.classList.add('hit'); }
+    handEl.classList.remove('show');
+    vibrate([35, 40, 35]);
+    showBurst();
+    setTimeout(function(){
+        if(i < LESSON.length - 1){ i++; render(); }
+        else { lock = false; }
+    }, 880);
+}
+
+function wrongAnswer(){
+    if(lock) return;
+    wrongCount++;
+    vibrate(60);
+    scene.classList.add('shake');
+    setTimeout(function(){ scene.classList.remove('shake'); }, 440);
+    textEl.textContent = 'این یکی نه. یه بار دیگه.';
+    if(wrongCount >= 2 && LESSON[i].part){
+        partEl(LESSON[i].part).classList.add('hint');
+        showHand(LESSON[i].part);
+    }
+}
+
+/* ---------------- کلیک روی صحنه ---------------- */
+
+scene.addEventListener('click', function(e){
+    if(lock) return;
+    var g = findPart(e.target);
+    if(!g) return;
+    var tapped = g.getAttribute('data-part');
+    var s = LESSON[i];
+
+    if(s.t === 'find'){
+        var want = s.part;
+        var ok = (tapped === want) ||
+                 (want === 'case' && (tapped === 'power' || tapped === 'usb' || tapped === 'jack'));
+        if(ok){ correct(g); } else { wrongAnswer(); }
+    }
+    else if(s.t === 'final'){
+        if(tapped === 'power'){
+            lock = true;
+            partEl('power').classList.add('hit');
+            scene.classList.add('on');
+            handEl.classList.remove('show');
+            vibrate([40, 60, 40, 60, 140]);
+            showBurst();
+            stars();
+            setTimeout(stars, 300);
+            titleEl.textContent = 'آفرین!';
+            textEl.textContent  = 'کامپیوتر روشن شد. حالا همه‌ی قطعه‌هاش رو می‌شناسی.';
+            setButtons([{ label:'جمع‌بندی', cls:'main', onClick:next }]);
+        } else {
+            wrongAnswer();
+        }
+    }
+    else if(s.t === 'recap'){
+        /* در جمع‌بندی، هر کلیک روی صحنه هم همان قطعه را نشان می‌دهد */
+        var name = tapped;
+        clearMarks();
+        scene.classList.add('focusing');
+        partEl(name).classList.add('spot');
+        titleEl.textContent = PARTS[name][0];
+        textEl.textContent  = PARTS[name][1];
+        vibrate(25);
+    }
+});
+
+/* ---------------- دکمه‌ها ---------------- */
+
+document.getElementById('replay').onclick = function(){
+    vibrate(20);
+    render();
+};
+
+/* ---------------- جلوگیری از زوم ---------------- */
+
+document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+document.addEventListener('touchmove', function(e){
+    if(e.touches.length > 1){ e.preventDefault(); }
+}, { passive:false });
+document.addEventListener('dblclick', function(e){ e.preventDefault(); }, { passive:false });
+
+/* ---------------- شروع ---------------- */
+render();
+</script>
+
+</body>
+</html>
