@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080c12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="کامی">
+<title>امتحان ۱ — اجزای کامپیوتر</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="exam.css">
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   امتحان ۱ — اجزای کامپیوتر
+   ────────────────────────────────────────────────────────────
+   cap  : کارت کلیدی که نشان داده می‌شود (خالی = نشان داده نمی‌شود)
+   q    : متن سؤال
+   opts : سه جواب
+   a    : شماره‌ی جواب درست — از صفر (۰ اولی، ۱ دومی، ۲ سومی)
+   ============================================================ */
+
+window.EXAM = {
+    no: 1,
+    title: 'امتحان ۱ — اجزای کامپیوتر',
+    qs: [
+        { cap:'', q:'همه‌ی کارهای کامپیوتر کجا انجام می‌شه؟',
+          opts:['کیس','مانیتور','کیبورد'], a:0 },
+
+        { cap:'', q:'نتیجه‌ی کارت رو کجا می‌بینی؟',
+          opts:['کیس','مانیتور','ماوس'], a:1 },
+
+        { cap:'', q:'برای روشن کردن کامپیوتر کجا رو می‌زنی؟',
+          opts:['دکمه‌ی پاور','صفحه‌ی مانیتور','چرخ ماوس'], a:0 },
+
+        { cap:'', q:'فلش مموری کجا می‌ره؟',
+          opts:['جک هدفون','پورت USB','پایه‌ی مانیتور'], a:1 },
+
+        { cap:'', q:'هدفون کجا وصل می‌شه؟',
+          opts:['جک هدفون','پورت USB','دکمه‌ی پاور'], a:0 },
+
+        { cap:'', q:'کدوم قطعه مثل «مغز» کامپیوتره؟',
+          opts:['مانیتور','کیس','کیبورد'], a:1 },
+
+        { cap:'', q:'با کدوم وسیله حرف می‌نویسی؟',
+          opts:['کیبورد','ماوس','مانیتور'], a:0 },
+
+        { cap:'', q:'با کدوم وسیله می‌گی کجا بره؟',
+          opts:['کیبورد','ماوس','کیس'], a:1 }
+    ]
+};
+</script>
+<script src="exam.js"></script>
+
+</body>
+</html>
