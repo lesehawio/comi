@@ -1,0 +1,257 @@
+/* ============================================================
+   exam.css  —  استایل مشترک همه‌ی امتحان‌ها (e-1 تا e-9)
+   این فایل را دست نزن، مگر بخواهی ظاهر را عوض کنی.
+   ============================================================ */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    overscroll-behavior:none;
+}
+
+body{
+    font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+    color:#e8edf5;
+    direction:rtl;
+    background:radial-gradient(ellipse 120% 70% at 50% 25%, #16202e 0%, #0d131c 45%, #080c12 100%);
+}
+
+#app{
+    height:100dvh;
+    height:100vh;
+    max-width:620px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+}
+
+/* =========================
+   نوار بالا
+   ========================= */
+
+.bar{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    border-bottom:1px solid rgba(255,255,255,.07);
+    background:rgba(13,19,28,.85);
+    backdrop-filter:blur(8px);
+}
+
+.bar .t{
+    flex:1;
+    font-size:17px;
+    font-weight:bold;
+    color:#4ade80;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.ic{
+    flex:0 0 auto;
+    width:46px;
+    height:46px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.045);
+    color:#8b97a8;
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    padding:0;
+    transition:transform .12s ease, background .2s;
+}
+
+.ic:active{ transform:scale(.92); background:rgba(255,255,255,.1); }
+
+/* =========================
+   بدنه
+   ========================= */
+
+#body{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:18px 16px 30px;
+}
+
+#qProg{
+    display:flex;
+    gap:4px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+#qProg i{
+    flex:1;
+    min-width:8px;
+    height:5px;
+    border-radius:3px;
+    background:#1e2733;
+}
+
+#qProg i.ok{ background:#4ade80; }
+#qProg i.no{ background:#e0825f; }
+#qProg i.now{ background:#8b97a8; }
+
+#qText{
+    font-size:20px;
+    line-height:1.7;
+    margin-bottom:18px;
+    color:#e8edf5;
+}
+
+.caps{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+}
+
+.cap{
+    display:inline-grid;
+    place-items:center;
+    min-width:74px;
+    padding:14px 18px;
+    border-radius:14px;
+    background:linear-gradient(180deg,#3d4655,#242b36);
+    border:1px solid #4a5462;
+    font-size:22px;
+    font-weight:bold;
+    color:#e8edf5;
+    direction:ltr;
+}
+
+.plus{ font-size:20px; color:#8b97a8; }
+
+.opt{
+    display:block;
+    width:100%;
+    text-align:right;
+    min-height:66px;
+    border-radius:17px;
+    border:1.5px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.05);
+    color:#e8edf5;
+    font-family:inherit;
+    font-size:18px;
+    padding:16px 18px;
+    margin-bottom:11px;
+    cursor:pointer;
+    transition:transform .12s ease, background .2s, border-color .2s;
+}
+
+.opt:active{ transform:scale(.98); }
+
+.opt.good{ background:rgba(74,222,128,.18); border-color:#4ade80; color:#c9ffe0; }
+.opt.bad{ background:rgba(224,130,95,.14); border-color:#e0825f; color:#ffd9c9; }
+.opt.dim{ opacity:.4; }
+
+/* =========================
+   نتیجه
+   ========================= */
+
+#scoreBig{
+    font-size:52px;
+    font-weight:bold;
+    color:#4ade80;
+    text-align:center;
+    margin:10px 0 6px;
+}
+
+#scoreSub{
+    text-align:center;
+    font-size:17px;
+    color:#c6d0de;
+    margin-bottom:24px;
+}
+
+.wrongList{
+    background:rgba(224,130,95,.08);
+    border:1px solid rgba(224,130,95,.25);
+    border-radius:16px;
+    padding:14px 16px;
+    margin-bottom:18px;
+}
+
+.wrongList h3{
+    font-size:15px;
+    color:#e0825f;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+.wrongList div{
+    font-size:14.5px;
+    color:#c6d0de;
+    line-height:1.9;
+}
+
+.btn{
+    border:none;
+    border-radius:17px;
+    background:rgba(255,255,255,.06);
+    color:#e8edf5;
+    font-family:inherit;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,.09);
+    padding:14px 18px;
+    min-height:60px;
+    width:100%;
+    margin-top:11px;
+    transition:transform .12s ease, background .2s;
+}
+
+.btn:active{ transform:scale(.96); background:rgba(255,255,255,.11); }
+
+.btn.main{
+    background:linear-gradient(180deg,#45c97f,#2e9c5c);
+    border-color:#5ee393;
+    color:#05200f;
+    box-shadow:0 8px 22px rgba(74,222,128,.28);
+}
+
+#sendMsg{
+    text-align:center;
+    font-size:14px;
+    margin-top:12px;
+    min-height:22px;
+    color:#8b97a8;
+    line-height:1.7;
+}
+
+.big-note{
+    text-align:center;
+    padding:60px 24px;
+    color:#8b97a8;
+    font-size:17px;
+    line-height:2.2;
+}
+
+.big-note b{ color:#4ade80; }
+
+@media (max-height:700px){
+    #qText{ font-size:18px; }
+    .opt{ min-height:60px; font-size:17px; }
+    #scoreBig{ font-size:44px; }
+    .cap{ min-width:66px; font-size:20px; padding:12px 15px; }
+}
