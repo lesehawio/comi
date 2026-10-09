@@ -1,10 +1,12 @@
 /* ============================================================
    exam.js  —  موتور مشترک همه‌ی امتحان‌ها
-
+   ------------------------------------------------------------
    هر فایل امتحان (e-1 تا e-9) فقط سؤال‌های خودش را دارد:
 
         window.EXAM = {
             no: 1,
+            version: 1,                  // ⬅️ این را وقتی سؤالات را
+                                         //    عوض کردی، یک عدد زیاد کن
             title: 'امتحان ۱ — اجزای کامپیوتر',
             qs: [ ... ]
         };
@@ -18,27 +20,20 @@
    ۱) امتحان جاری
    ============================================================ */
 
-var EXAM = window.EXAM || { no: 1, title: 'امتحان', qs: [] };
-var QS = EXAM.qs || [];
+var EXAM = window.EXAM || { no: 1, version: 1, title: 'امتحان', qs: [] };
+var QS   = EXAM.qs || [];
 
-var EXAM_NO = parseInt(EXAM.no, 10) || 1;
-
-/* برگشت به کدام منو؟  از آدرس می‌خوانیم:  e-3.html?m=3  */
-function param(name){
-    var m = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.search);
-    return m ? decodeURIComponent(m[1]) : '';
-}
-
-var BACK_MENU = parseInt(param('m'), 10);
-if(!BACK_MENU || BACK_MENU < 1 || BACK_MENU > 8){
-    BACK_MENU = (EXAM_NO >= 1 && EXAM_NO <= 8) ? EXAM_NO : 1;
-}
+var EXAM_NO      = parseInt(EXAM.no, 10) || 1;
+var EXAM_VERSION = parseInt(EXAM.version, 10) || 1;
 
 /* ============================================================
-   ۲) وضعیت — با منوها مشترک است
+   ۲) وضعیت — با منوها و index مشترک است
    ============================================================ */
 
 var KEY = 'kami_level1_v1';
+
+/* کلید جداگانه برای قفل امتحان‌ها */
+var LOCK_KEY = 'kami_done_v1';
 
 var SHEET_DEFAULT = 'https://script.google.com/macros/s/AKfycbwd2ChqHgFegDsXwSna1NWVTVWWbS0QPrnDX_YKwkbcmz6SnywstZBP1Vq07HOtiPZR/exec';
 
@@ -46,7 +41,10 @@ var OLD_SHEET_URLS = [
     'https://script.google.com/macros/s/AKfycbwbQJj5T-ORFGGMiELpGoM97dsZrBtX3xST9Y9W8U0nZjCjneBsehAV4Mleok2ql5Xz/exec'
 ];
 
-var ST = { name:'', done:{}, scores:[], sheet:SHEET_DEFAULT };
+var ST = { name:'', scores:[], sheet:SHEET_DEFAULT };
+
+/* قفل: { "1": 2, "2": 1, ... }  یعنی امتحان ۱ در نسخه‌ی ۲ داده شده */
+var DONE = {};
 
 function loadState(){
     try{
@@ -55,7 +53,6 @@ function loadState(){
             var o = JSON.parse(raw);
             if(o && typeof o === 'object'){
                 ST.name   = o.name   || '';
-                ST.done   = o.done   || {};
                 ST.scores = o.scores || [];
                 if(!o.sheet || OLD_SHEET_URLS.indexOf(o.sheet) >= 0){
                     ST.sheet = SHEET_DEFAULT;
@@ -65,10 +62,34 @@ function loadState(){
             }
         }
     }catch(e){}
+
+    try{
+        var raw2 = localStorage.getItem(LOCK_KEY);
+        if(raw2){
+            var o2 = JSON.parse(raw2);
+            if(o2 && typeof o2 === 'object'){ DONE = o2; }
+        }
+    }catch(e){}
 }
 
 function saveState(){
     try{ localStorage.setItem(KEY, JSON.stringify(ST)); }catch(e){}
+}
+
+function saveDone(){
+    try{ localStorage.setItem(LOCK_KEY, JSON.stringify(DONE)); }catch(e){}
+}
+
+/* آیا این امتحان قبلاً در همین نسخه داده شده؟ */
+function isLocked(){
+    var v = DONE[String(EXAM_NO)];
+    return v && parseInt(v, 10) === EXAM_VERSION;
+}
+
+/* ثبت این‌که امتحان داده شد */
+function markDone(){
+    DONE[String(EXAM_NO)] = EXAM_VERSION;
+    saveDone();
 }
 
 /* ============================================================
@@ -104,7 +125,15 @@ function dateFa(){
 }
 
 /* ============================================================
-   ۴) اسکلت صفحه
+   ۴) برگشت به index.html
+   ============================================================ */
+
+function goHome(){
+    window.location.href = 'index.html';
+}
+
+/* ============================================================
+   ۵) اسکلت صفحه
    ============================================================ */
 
 var ICON_BACK = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
@@ -119,25 +148,63 @@ document.getElementById('app').innerHTML = ''
 document.title = EXAM.title;
 
 /* ============================================================
-   ۵) گردش امتحان
+   ۶) گردش امتحان
    ============================================================ */
 
 var qIdx = 0;
 var qRight = 0;
-var qWrong = [];       /* شماره‌ی سؤال‌های غلط */
-var qWrongText = [];   /* متن آن‌ها — برای کارنامه */
+var qWrong = [];
+var qWrongText = [];
 var qLock = false;
-
-function goHome(){
-    window.location.href = 'm-' + BACK_MENU + '.html';
-}
-
-el('backBtn').onclick = goHome;
 
 function start(){
     qIdx = 0; qRight = 0; qWrong = []; qWrongText = []; qLock = false;
     renderQuestion();
 }
+
+/* ============================================================
+   صفحه‌ی «قبلاً داده شده»
+   ============================================================ */
+
+function renderLocked(){
+
+    var lastScore = null;
+    for(var k = ST.scores.length - 1; k >= 0; k--){
+        if(ST.scores[k].examNo === EXAM_NO){
+            lastScore = ST.scores[k];
+            break;
+        }
+    }
+
+    var h = '';
+    h += '<div id="scoreBig" style="color:#e0b96a">🔒</div>';
+    h += '<div id="scoreSub">این امتحان را قبلاً داده‌ای.<br>هر امتحان فقط یک بار قابل انجام است.</div>';
+
+    if(lastScore){
+        h += '<div class="wrongList" style="background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3)">';
+        h +=   '<h3 style="color:#4ade80">نمره‌ی قبلی تو</h3>';
+        h +=   '<div>' + fa(lastScore.score) + ' / ' + fa(lastScore.total) +
+               ' &nbsp;—&nbsp; ' + fa(lastScore.pct) + '٪</div>';
+        if(lastScore.wrong && lastScore.wrong.length){
+            h += '<div style="margin-top:12px;color:#a0aec0;font-size:13px">اشتباه‌ها: ' +
+                 fa(lastScore.wrong.length) + ' مورد</div>';
+        }
+        h += '</div>';
+    }
+
+    h += '<button class="btn main" id="goReport">دیدن کارنامه</button>';
+    h += '<button class="btn" id="resBack">برگشت به منو</button>';
+
+    el('body').innerHTML = h;
+    el('body').scrollTop = 0;
+
+    el('goReport').onclick = goHome;
+    el('resBack').onclick  = goHome;
+}
+
+/* ============================================================
+   نمایش سؤال
+   ============================================================ */
 
 function renderQuestion(){
 
@@ -227,23 +294,32 @@ el('body').addEventListener('click', function(e){
 
 });
 
+/* ============================================================
+   نتیجه
+   ============================================================ */
+
 function renderResult(){
 
     var total = QS.length;
     var pct = Math.round(qRight / total * 100);
 
     var rec = {
-        date:  dateFa(),
-        exam:  EXAM.title,
-        score: qRight,
-        total: total,
-        pct:   pct,
-        wrong: qWrongText.slice(),
-        name:  ST.name
+        date:    dateFa(),
+        exam:    EXAM.title,
+        examNo:  EXAM_NO,
+        version: EXAM_VERSION,
+        score:   qRight,
+        total:   total,
+        pct:     pct,
+        wrong:   qWrongText.slice(),
+        name:    ST.name
     };
 
     ST.scores.push(rec);
     saveState();
+
+    /* ⬅️ قفل: این امتحان در این نسخه داده شد */
+    markDone();
 
     var h = '';
     h += '<div id="scoreBig">' + fa(qRight) + ' / ' + fa(total) + '</div>';
@@ -263,19 +339,17 @@ function renderResult(){
 
     h += '<button class="btn main" id="resSend">فرستادن نمره به گوگل‌شیت</button>';
     h += '<div id="sendMsg"></div>';
-    h += '<button class="btn" id="resAgain">دوباره امتحان بده</button>';
     h += '<button class="btn" id="resBack">برگشت به منو</button>';
 
     el('body').innerHTML = h;
     el('body').scrollTop = 0;
 
-    el('resAgain').onclick = start;
-    el('resBack').onclick  = goHome;
-    el('resSend').onclick  = function(){ sendScore(rec); };
+    el('resBack').onclick = goHome;
+    el('resSend').onclick = function(){ sendScore(rec); };
 }
 
 /* ============================================================
-   ۶) ارسال به گوگل‌شیت
+   ۷) ارسال به گوگل‌شیت
    ============================================================ */
 
 function setMsg(text, color){
@@ -318,13 +392,19 @@ function sendScore(rec){
 }
 
 /* ============================================================
-   ۷) شروع
+   ۸) شروع
    ============================================================ */
 
 document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
 document.addEventListener('dblclick', function(e){ e.preventDefault(); }, { passive:false });
 
 loadState();
-start();
+
+/* اگر قبلاً در همین نسخه داده شده بود، قفل کن */
+if(isLocked()){
+    renderLocked();
+} else {
+    start();
+}
 
 })();
