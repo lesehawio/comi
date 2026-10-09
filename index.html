@@ -13,13 +13,6 @@
 <style>
 /* ============================================================
    کامی — منوی مرجع   •   تم شیشه‌ای (visionOS)
-
-   یک درس • یک امتحان • کارنامه • پروفایل یک‌بار
-
-   فایل‌های کنارش:
-        1-1.html   ← درس
-        e-1.html   ← امتحان
-        exam.css   exam.js
    ============================================================ */
 
 :root{
@@ -68,7 +61,6 @@ body{
     isolation:isolate;
 }
 
-/* نورهای پس‌زمینه — عمق شیشه‌ای */
 #app::before{
     content:'';
     position:absolute;
@@ -99,7 +91,7 @@ body{
 .screen.show{ display:flex; }
 
 /* ============================================================
-   سرصفحه — شیشه
+   سرصفحه
    ============================================================ */
 
 .hdr{
@@ -244,7 +236,6 @@ body{
     overflow:hidden;
 }
 
-/* بازتاب نور روی لبه‌ی بالا */
 .card::before{
     content:'';
     position:absolute;
@@ -391,7 +382,6 @@ body{
     place-items:center;
 }
 
-/* هاله‌ی نور پشت لوگو — عمق، نه کادر */
 .hero::before{
     content:'';
     position:absolute;
@@ -498,112 +488,326 @@ h1{
 }
 
 /* ============================================================
-   کارنامه
+   کارنامه — نسخه‌ی کامل با پروفایل و JSON
    ============================================================ */
 
 #repBody{
     flex:1;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
-    padding:24px 18px 44px;
+    padding:20px 18px 40px;
 }
 
-.sum{
+.student-card{
     position:relative;
-    background:linear-gradient(180deg, rgba(74,222,128,.16), rgba(74,222,128,.05));
-    border:1px solid rgba(74,222,128,.30);
+    background:linear-gradient(180deg, rgba(74,222,128,.14), rgba(74,222,128,.04));
+    border:1px solid rgba(74,222,128,.28);
     border-radius:28px;
-    padding:28px 22px;
-    margin-bottom:18px;
-    text-align:center;
+    padding:22px 20px;
+    margin-bottom:16px;
     backdrop-filter:blur(24px) saturate(160%);
     -webkit-backdrop-filter:blur(24px) saturate(160%);
     box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.18);
     overflow:hidden;
 }
 
-.sum::before{
+.student-card::before{
     content:'';
     position:absolute;
-    left:16%;
-    right:16%;
-    top:0;
-    height:1px;
+    left:16%; right:16%; top:0; height:1px;
     background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.6), rgba(255,255,255,0));
 }
 
-.sum .big{
-    font-size:56px;
-    font-weight:bold;
-    color:#7cf0a6;
-    line-height:1.15;
-    text-shadow:0 6px 26px rgba(74,222,128,.45);
+.stu-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
 }
 
-.sum .lbl{
+.stu-avatar{
+    width:60px;
+    height:60px;
+    flex:0 0 auto;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(180deg,#5ee393,#34a866);
+    color:#03170c;
+    font-size:26px;
+    font-weight:bold;
+    box-shadow:0 8px 22px rgba(74,222,128,.45), inset 0 1px 0 rgba(255,255,255,.5);
+}
+
+.stu-info{
+    flex:1;
+    min-width:0;
+}
+
+.stu-info .nm{
+    font-size:19px;
+    font-weight:bold;
+    color:#fff;
+    margin-bottom:4px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.stu-info .st{
+    font-size:12.5px;
+    color:#a8c0d4;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.stu-info .st .dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#4ade80;
+    box-shadow:0 0 8px #4ade80;
+}
+
+.stu-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+}
+
+.stu-stats div{
+    background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:13px;
+    padding:9px 4px;
+    text-align:center;
+}
+
+.stu-stats .n{
+    font-size:16px;
+    font-weight:bold;
+    color:#7cf0a6;
+    display:block;
+    line-height:1.2;
+}
+
+.stu-stats .l{
+    font-size:10.5px;
+    color:#8a97a8;
+    margin-top:3px;
+    display:block;
+}
+
+.rep-actions{
+    display:flex;
+    gap:8px;
+    margin-bottom:18px;
+}
+
+.rep-actions button{
+    flex:1;
+    min-height:48px;
+    border-radius:15px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+    color:#c6d0de;
+    font-family:inherit;
     font-size:13.5px;
-    color:#9fb3c4;
-    margin-top:8px;
+    font-weight:bold;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:0 8px;
+    transition:transform .14s ease, background .2s, color .2s;
+}
+
+.rep-actions button:active{ transform:scale(.96); background:rgba(255,255,255,.15); }
+
+.rep-actions button svg{
+    width:16px; height:16px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.rep-actions button.green{
+    border-color:rgba(74,222,128,.4);
+    background:linear-gradient(180deg, rgba(74,222,128,.18), rgba(74,222,128,.06));
+    color:#7cf0a6;
+}
+
+.rep-actions button.green:active{ background:rgba(74,222,128,.28); }
+
+.copy-toast{
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:linear-gradient(180deg,#63e89a,#31a463);
+    color:#03170c;
+    font-size:14px;
+    font-weight:bold;
+    padding:12px 22px;
+    border-radius:16px;
+    box-shadow:0 14px 34px rgba(74,222,128,.5);
+    z-index:999;
+    opacity:0;
+    transition:all .35s cubic-bezier(.2,.9,.3,1);
+    pointer-events:none;
+    font-family:inherit;
+}
+
+.copy-toast.show{
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
+}
+
+.sec-title{
+    font-size:13px;
+    color:var(--dim);
+    letter-spacing:1px;
+    margin:8px 6px 12px;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.sec-title::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg, rgba(255,255,255,.12), transparent);
 }
 
 .item{
     position:relative;
     background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.03));
     border:1px solid var(--stroke);
-    border-radius:22px;
-    padding:18px 20px;
-    margin-bottom:12px;
+    border-radius:20px;
+    padding:16px 18px 14px;
+    margin-bottom:10px;
     backdrop-filter:blur(20px);
     -webkit-backdrop-filter:blur(20px);
-    box-shadow:0 14px 34px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.12);
+    box-shadow:0 12px 28px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.12);
+    overflow:hidden;
 }
+
+.item::before{
+    content:'';
+    position:absolute;
+    right:0; top:0; bottom:0;
+    width:4px;
+    border-radius:0 20px 20px 0;
+}
+
+.item[data-grade="great"]::before{ background:linear-gradient(180deg,#4ade80,#22c55e); }
+.item[data-grade="good"]::before{ background:linear-gradient(180deg,#ecc98a,#d4a24a); }
+.item[data-grade="bad"]::before{  background:linear-gradient(180deg,#ff8a6b,#e05a3a); }
 
 .item .top{
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    gap:12px;
-    margin-bottom:8px;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:5px;
+}
+
+.item .exam-name{
+    font-size:13.5px;
+    font-weight:bold;
+    color:#f2f6fa;
 }
 
 .item .sc{
-    font-size:19px;
+    font-size:16px;
     font-weight:bold;
     color:var(--text);
+    white-space:nowrap;
 }
 
 .item .sc em{
     font-style:normal;
     color:#7cf0a6;
+    font-size:20px;
 }
+
+.item[data-grade="bad"] .sc em{ color:#ff8a6b; }
+.item[data-grade="good"] .sc em{ color:#ecc98a; }
 
 .item .dt{
-    font-size:12.5px;
+    font-size:11px;
     color:var(--dim);
-    text-align:left;
+    margin-bottom:9px;
 }
 
-.item .wr{
-    font-size:13px;
-    color:var(--muted);
-    line-height:2;
+.item .bar{
+    height:5px;
+    background:rgba(255,255,255,.08);
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:9px;
 }
+
+.item .bar i{
+    display:block;
+    height:100%;
+    border-radius:10px;
+}
+
+.item[data-grade="great"] .bar i{ background:linear-gradient(90deg,#4ade80,#22c55e); box-shadow:0 0 10px rgba(74,222,128,.6); }
+.item[data-grade="good"]  .bar i{ background:linear-gradient(90deg,#ecc98a,#d4a24a); box-shadow:0 0 10px rgba(224,185,106,.5); }
+.item[data-grade="bad"]   .bar i{ background:linear-gradient(90deg,#ff8a6b,#e05a3a); box-shadow:0 0 10px rgba(224,90,58,.5); }
+
+.item .wr{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.85;
+    padding-top:7px;
+    border-top:1px dashed rgba(255,255,255,.08);
+}
+
+.item .wr b{ color:#ffb08a; font-weight:bold; }
+.item .wr .ok{ color:#7cf0a6; }
 
 .empty{
     text-align:center;
     color:var(--muted);
-    font-size:15.5px;
-    padding:70px 24px;
+    font-size:15px;
+    padding:50px 24px;
     line-height:2.3;
+}
+
+.empty .big-emoji{
+    font-size:52px;
+    display:block;
+    margin-bottom:14px;
+    opacity:.5;
+}
+
+.send-bar{
+    position:sticky;
+    bottom:0;
+    padding:14px 0 0;
+    background:linear-gradient(180deg, rgba(5,8,13,0), rgba(5,8,13,.95) 40%);
+    margin-top:8px;
 }
 
 #sendMsg{
     text-align:center;
-    font-size:14px;
-    margin-top:16px;
-    min-height:24px;
+    font-size:12.5px;
+    margin-top:8px;
+    min-height:18px;
     color:var(--muted);
-    line-height:1.9;
+    line-height:1.8;
 }
 
 /* ============================================================
@@ -690,7 +894,6 @@ h1{
     .card h2{ font-size:19px; }
     .btn{ min-height:54px; font-size:16px; }
     h1{ font-size:22px; }
-    .sum .big{ font-size:46px; }
 }
 </style>
 </head>
@@ -772,7 +975,7 @@ h1{
     </section>
 
     <!-- ============================================================
-         نمایش درس یا امتحان — در همین پنجره
+         نمایش درس یا امتحان
          ============================================================ -->
     <section id="scView" class="screen">
         <header class="hdr">
@@ -849,7 +1052,7 @@ h1{
 
 <script>
 /* ============================================================
-   ۱) تنظیمات — نقطه‌ی اتصال به درس و امتحان
+   ۱) تنظیمات
    ============================================================ */
 
 var LESSON_FILE  = '1-1.html';
@@ -864,7 +1067,6 @@ var EXAM_SUB     = '۸ سؤال چهارگزینه‌ای';
    ۲) ذخیره‌سازی
    ============================================================ */
 
-/* این کلید باید با exam.js یکی باشد تا کارنامه نمره‌ها را ببیند */
 var KEY = 'kami_level1_v1';
 
 var SHEET_DEFAULT = 'https://script.google.com/macros/s/AKfycbwd2ChqHgFegDsXwSna1NWVTVWWbS0QPrnDX_YKwkbcmz6SnywstZBP1Vq07HOtiPZR/exec';
@@ -928,6 +1130,41 @@ function show(which){
 function initialOf(name){
     var s = String(name || '').trim();
     return s ? s.charAt(0) : '؟';
+}
+
+function prettyDate(iso){
+    if(!iso) return '';
+    try{
+        var d = new Date(iso);
+        if(isNaN(d.getTime())){
+            return String(iso);
+        }
+
+        var faDate = '';
+        try{
+            faDate = d.toLocaleDateString('fa-IR', {
+                year:'numeric', month:'2-digit', day:'2-digit'
+            });
+        }catch(e){
+            faDate = d.getFullYear() + '/' +
+                     ('0'+(d.getMonth()+1)).slice(-2) + '/' +
+                     ('0'+d.getDate()).slice(-2);
+        }
+
+        var faTime = '';
+        try{
+            faTime = d.toLocaleTimeString('fa-IR', {
+                hour:'2-digit', minute:'2-digit'
+            });
+        }catch(e){
+            faTime = ('0'+d.getHours()).slice(-2) + ':' +
+                     ('0'+d.getMinutes()).slice(-2);
+        }
+
+        return faDate + ' — ' + faTime;
+    }catch(e){
+        return String(iso);
+    }
 }
 
 /* ============================================================
@@ -1038,61 +1275,262 @@ window.addEventListener('message', function(e){
 });
 
 /* ============================================================
-   ۷) کارنامه
+   ۷) کارنامه — نسخه‌ی کامل با پروفایل و JSON
    ============================================================ */
 
 function openReport(){
     show('scReport');
 
+    /* ----- حالت خالی ----- */
     if(!ST.scores.length){
         el('repBody').innerHTML =
-            '<div class="empty">هنوز امتحانی نداده‌ای.<br>از منو، «شروع امتحان» را بزن.</div>';
+            '<div class="student-card">' +
+                '<div class="stu-row">' +
+                    '<div class="stu-avatar">' + escapeHtml(initialOf(ST.name)) + '</div>' +
+                    '<div class="stu-info">' +
+                        '<div class="nm">' + escapeHtml(ST.name || 'بی‌نام') + '</div>' +
+                        '<div class="st"><span class="dot"></span>هنوز امتحانی نداده‌ای</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="empty">' +
+              '<span class="big-emoji">📋</span>' +
+              'کارنامه‌ات خالی است.<br>' +
+              'از منو، «شروع امتحان» را بزن.' +
+            '</div>';
         return;
     }
 
-    var h = '';
-    var best = 0;
+    var scores = ST.scores;
+    var n      = scores.length;
+    var best   = 0;
+    var sum    = 0;
+    var last   = scores[n - 1];
 
-    for(var k=0;k<ST.scores.length;k++){
-        if(ST.scores[k].pct > best){ best = ST.scores[k].pct; }
+    for(var k = 0; k < n; k++){
+        var p = scores[k].pct || 0;
+        sum += p;
+        if(p > best) best = p;
     }
+    var avg = Math.round(sum / n);
 
-    h += '<div class="sum">';
-    h +=   '<div class="big">' + fa(best) + '٪</div>';
-    h +=   '<div class="lbl">بهترین نمره &nbsp;•&nbsp; ' + escapeHtml(ST.name) + '</div>';
+    /* وضعیت دانش‌آموز بر اساس میانگین */
+    var status, statusColor;
+    if(avg >= 85){ status = 'عالی — ادامه بده'; statusColor = '#4ade80'; }
+    else if(avg >= 70){ status = 'خوب — قابل پیشرفت'; statusColor = '#7cf0a6'; }
+    else if(avg >= 50){ status = 'متوسط — نیاز به تمرین'; statusColor = '#ecc98a'; }
+    else { status = 'ضعیف — تمرین بیشتر'; statusColor = '#ff8a6b'; }
+
+    var h = '';
+
+    /* ----- کارت پروفایل دانش‌آموز ----- */
+    h += '<div class="student-card">';
+
+    h +=   '<div class="stu-row">';
+    h +=     '<div class="stu-avatar">' + escapeHtml(initialOf(ST.name)) + '</div>';
+    h +=     '<div class="stu-info">';
+    h +=       '<div class="nm">' + escapeHtml(ST.name || 'بی‌نام') + '</div>';
+    h +=       '<div class="st"><span class="dot" style="background:' + statusColor + ';box-shadow:0 0 8px ' + statusColor + '"></span>' + status + '</div>';
+    h +=     '</div>';
+    h +=   '</div>';
+
+    h +=   '<div class="stu-stats">';
+    h +=     '<div><span class="n">' + fa(n)    + '</span><span class="l">امتحان</span></div>';
+    h +=     '<div><span class="n">' + fa(best) + '٪</span><span class="l">بهترین</span></div>';
+    h +=     '<div><span class="n">' + fa(avg)  + '٪</span><span class="l">میانگین</span></div>';
+    h +=     '<div><span class="n">' + fa(last ? last.pct : 0) + '٪</span><span class="l">آخری</span></div>';
+    h +=   '</div>';
+
     h += '</div>';
 
-    for(var j=ST.scores.length-1;j>=0;j--){
+    /* ----- دکمه‌های کارنامه ----- */
+    h += '<div class="rep-actions">';
+    h +=   '<button id="repCopy" class="green">';
+    h +=     '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+    h +=     'کپی JSON';
+    h +=   '</button>';
+    h +=   '<button id="repDownload">';
+    h +=     '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    h +=     'دانلود فایل';
+    h +=   '</button>';
+    h += '</div>';
 
-        var r = ST.scores[j];
+    /* ----- سوابق امتحانات ----- */
+    h += '<div class="sec-title">سوابق امتحانات</div>';
 
-        h += '<div class="item">';
+    for(var j = n - 1; j >= 0; j--){
+
+        var r   = scores[j];
+        var pct = r.pct || 0;
+        var gr  = pct >= 80 ? 'great' : (pct >= 50 ? 'good' : 'bad');
+        var dateStr = prettyDate(r.date);
+
+        h += '<div class="item" data-grade="' + gr + '">';
+
         h +=   '<div class="top">';
+        h +=     '<span class="exam-name">' + escapeHtml(r.exam || EXAM_TITLE) + '</span>';
         h +=     '<span class="sc"><em>' + fa(r.score) + '</em> / ' + fa(r.total) + '</span>';
-        h +=     '<span class="dt">' + escapeHtml(r.date) + '</span>';
         h +=   '</div>';
 
+        h +=   '<div class="dt">' + escapeHtml(dateStr) + ' &nbsp;•&nbsp; ' + fa(pct) + '٪</div>';
+        h +=   '<div class="bar"><i style="width:' + pct + '%"></i></div>';
+
         if(r.wrong && r.wrong.length){
-            h += '<div class="wr">اشتباه‌ها:<br>';
-            for(var w=0;w<r.wrong.length;w++){
+            h += '<div class="wr"><b>اشتباه‌ها:</b><br>';
+            for(var w = 0; w < r.wrong.length; w++){
                 h += '• ' + escapeHtml(r.wrong[w]) + '<br>';
             }
             h += '</div>';
         } else {
-            h += '<div class="wr">همه را درست زدی</div>';
+            h += '<div class="wr"><span class="ok">✓ همه را درست زدی</span></div>';
         }
 
         h += '</div>';
     }
 
-    h += '<button class="btn solid" id="repSend" style="margin-top:12px">فرستادن نمره‌ها به گوگل‌شیت</button>';
-    h += '<div id="sendMsg"></div>';
+    /* ----- دکمه‌ی ارسال به شیت ----- */
+    h += '<div class="send-bar">';
+    h +=   '<button class="btn solid" id="repSend">فرستادن نمره‌ها به گوگل‌شیت</button>';
+    h +=   '<div id="sendMsg"></div>';
+    h += '</div>';
 
     el('repBody').innerHTML = h;
-    el('repSend').onclick = sendAll;
+
+    /* ----- رویدادها ----- */
+    el('repSend').onclick     = sendAll;
+    el('repCopy').onclick     = copyJson;
+    el('repDownload').onclick = downloadJson;
 }
 
 el('repBack').onclick = openMenu;
+
+/* ============================================================
+   ساخت JSON از اطلاعات دانش‌آموز
+   ============================================================ */
+
+function buildStudentJson(){
+    return {
+        app:      'کامی',
+        version:  '1.0',
+        exported: new Date().toISOString(),
+        student: {
+            name: ST.name || 'بی‌نام'
+        },
+        summary: (function(){
+            var n = ST.scores.length;
+            if(!n) return { total: 0, best: 0, avg: 0, last: 0 };
+
+            var best = 0, sum = 0;
+            for(var i = 0; i < n; i++){
+                var p = ST.scores[i].pct || 0;
+                sum += p;
+                if(p > best) best = p;
+            }
+            return {
+                total: n,
+                best:  best,
+                avg:   Math.round(sum / n),
+                last:  ST.scores[n - 1].pct || 0
+            };
+        })(),
+        scores: ST.scores.map(function(r){
+            return {
+                exam:  r.exam || EXAM_TITLE,
+                date:  r.date,
+                score: r.score,
+                total: r.total,
+                pct:   r.pct,
+                wrong: r.wrong || []
+            };
+        })
+    };
+}
+
+/* ----- کپی JSON در کلیپ‌بورد ----- */
+function copyJson(){
+    var json = JSON.stringify(buildStudentJson(), null, 2);
+
+    function done(){
+        vibrate([20, 40, 20]);
+        showToast('JSON کپی شد ✓');
+    }
+
+    if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(json).then(done).catch(function(){
+            fallbackCopy(json, done);
+        });
+    } else {
+        fallbackCopy(json, done);
+    }
+}
+
+function fallbackCopy(text, cb){
+    try{
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        ta.style.top = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if(ok) cb();
+        else showToast('کپی نشد — دستی انتخاب کن', '#ffb08a');
+    }catch(e){
+        showToast('کپی نشد', '#ffb08a');
+    }
+}
+
+/* ----- دانلود فایل JSON ----- */
+function downloadJson(){
+    try{
+        var json = JSON.stringify(buildStudentJson(), null, 2);
+        var blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+        var url  = URL.createObjectURL(blob);
+
+        var safeName = (ST.name || 'student').replace(/[^\u0600-\u06FF\w\-]/g, '_');
+        var fileName = 'kami-' + safeName + '-' + Date.now() + '.json';
+
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+
+        vibrate([20, 40, 20]);
+        showToast('فایل ذخیره شد ✓');
+    }catch(e){
+        showToast('دانلود نشد', '#ffb08a');
+    }
+}
+
+/* ----- نمایش پیام شیشه‌ای ----- */
+function showToast(text, color){
+    var old = document.querySelector('.copy-toast');
+    if(old) old.remove();
+
+    var t = document.createElement('div');
+    t.className = 'copy-toast';
+    t.textContent = text;
+    if(color){
+        t.style.background = 'linear-gradient(180deg, #ffb08a, #d97a4e)';
+        t.style.color = '#2b0f00';
+        t.style.boxShadow = '0 14px 34px rgba(224,130,95,.5)';
+    }
+    document.body.appendChild(t);
+
+    requestAnimationFrame(function(){ t.classList.add('show'); });
+
+    setTimeout(function(){
+        t.classList.remove('show');
+        setTimeout(function(){ t.remove(); }, 400);
+    }, 2200);
+}
 
 /* ============================================================
    ۸) ارسال به گوگل‌شیت
