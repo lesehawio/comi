@@ -1275,7 +1275,7 @@ window.addEventListener('message', function(e){
 });
 
 /* ============================================================
-   ۷) کارنامه — نسخه‌ی کامل با پروفایل و JSON
+   ۷) کارنامه — نسخه‌ی کامل
    ============================================================ */
 
 function openReport(){
@@ -1314,7 +1314,6 @@ function openReport(){
     }
     var avg = Math.round(sum / n);
 
-    /* وضعیت دانش‌آموز بر اساس میانگین */
     var status, statusColor;
     if(avg >= 85){ status = 'عالی — ادامه بده'; statusColor = '#4ade80'; }
     else if(avg >= 70){ status = 'خوب — قابل پیشرفت'; statusColor = '#7cf0a6'; }
@@ -1323,9 +1322,8 @@ function openReport(){
 
     var h = '';
 
-    /* ----- کارت پروفایل دانش‌آموز ----- */
+    /* کارت پروفایل */
     h += '<div class="student-card">';
-
     h +=   '<div class="stu-row">';
     h +=     '<div class="stu-avatar">' + escapeHtml(initialOf(ST.name)) + '</div>';
     h +=     '<div class="stu-info">';
@@ -1333,17 +1331,15 @@ function openReport(){
     h +=       '<div class="st"><span class="dot" style="background:' + statusColor + ';box-shadow:0 0 8px ' + statusColor + '"></span>' + status + '</div>';
     h +=     '</div>';
     h +=   '</div>';
-
     h +=   '<div class="stu-stats">';
     h +=     '<div><span class="n">' + fa(n)    + '</span><span class="l">امتحان</span></div>';
     h +=     '<div><span class="n">' + fa(best) + '٪</span><span class="l">بهترین</span></div>';
     h +=     '<div><span class="n">' + fa(avg)  + '٪</span><span class="l">میانگین</span></div>';
     h +=     '<div><span class="n">' + fa(last ? last.pct : 0) + '٪</span><span class="l">آخری</span></div>';
     h +=   '</div>';
-
     h += '</div>';
 
-    /* ----- دکمه‌های کارنامه ----- */
+    /* دکمه‌های JSON */
     h += '<div class="rep-actions">';
     h +=   '<button id="repCopy" class="green">';
     h +=     '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
@@ -1355,23 +1351,20 @@ function openReport(){
     h +=   '</button>';
     h += '</div>';
 
-    /* ----- سوابق امتحانات ----- */
+    /* سوابق */
     h += '<div class="sec-title">سوابق امتحانات</div>';
 
     for(var j = n - 1; j >= 0; j--){
-
         var r   = scores[j];
         var pct = r.pct || 0;
         var gr  = pct >= 80 ? 'great' : (pct >= 50 ? 'good' : 'bad');
         var dateStr = prettyDate(r.date);
 
         h += '<div class="item" data-grade="' + gr + '">';
-
         h +=   '<div class="top">';
         h +=     '<span class="exam-name">' + escapeHtml(r.exam || EXAM_TITLE) + '</span>';
         h +=     '<span class="sc"><em>' + fa(r.score) + '</em> / ' + fa(r.total) + '</span>';
         h +=   '</div>';
-
         h +=   '<div class="dt">' + escapeHtml(dateStr) + ' &nbsp;•&nbsp; ' + fa(pct) + '٪</div>';
         h +=   '<div class="bar"><i style="width:' + pct + '%"></i></div>';
 
@@ -1384,11 +1377,10 @@ function openReport(){
         } else {
             h += '<div class="wr"><span class="ok">✓ همه را درست زدی</span></div>';
         }
-
         h += '</div>';
     }
 
-    /* ----- دکمه‌ی ارسال به شیت ----- */
+    /* دکمه‌ی ارسال به شیت */
     h += '<div class="send-bar">';
     h +=   '<button class="btn solid" id="repSend">فرستادن نمره‌ها به گوگل‌شیت</button>';
     h +=   '<div id="sendMsg"></div>';
@@ -1396,16 +1388,14 @@ function openReport(){
 
     el('repBody').innerHTML = h;
 
-    /* ----- رویدادها ----- */
+    /* اتصال رویدادها */
     el('repSend').onclick     = sendAll;
     el('repCopy').onclick     = copyJson;
     el('repDownload').onclick = downloadJson;
 }
 
-el('repBack').onclick = openMenu;
-
 /* ============================================================
-   ساخت JSON از اطلاعات دانش‌آموز
+   ساخت JSON
    ============================================================ */
 
 function buildStudentJson(){
@@ -1446,7 +1436,6 @@ function buildStudentJson(){
     };
 }
 
-/* ----- کپی JSON در کلیپ‌بورد ----- */
 function copyJson(){
     var json = JSON.stringify(buildStudentJson(), null, 2);
 
@@ -1483,7 +1472,6 @@ function fallbackCopy(text, cb){
     }
 }
 
-/* ----- دانلود فایل JSON ----- */
 function downloadJson(){
     try{
         var json = JSON.stringify(buildStudentJson(), null, 2);
@@ -1509,7 +1497,6 @@ function downloadJson(){
     }
 }
 
-/* ----- نمایش پیام شیشه‌ای ----- */
 function showToast(text, color){
     var old = document.querySelector('.copy-toast');
     if(old) old.remove();
@@ -1638,6 +1625,14 @@ if(ST.name){
 } else {
     show('scProfile');
 }
+
+/* ============================================================
+   ⚠️ مهم: اتصال دکمه‌ها به توابع — این بخش تضمین می‌کند
+   که دکمه‌ی «دیدن» و «برگشت کارنامه» کار کنند.
+   ============================================================ */
+
+el('openReport').onclick = openReport;
+el('repBack').onclick    = openMenu;
 </script>
 
 </body>
