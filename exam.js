@@ -20,7 +20,7 @@
    ۱) امتحان جاری
    ============================================================ */
 
-var EXAM = window.EXAM || { no: 1, version: 1, title: 'امتحان', qs: [] };
+var EXAM = window.EXAM || { no: 1, version: 2, title: 'امتحان', qs: [] };
 var QS   = EXAM.qs || [];
 
 var EXAM_NO      = parseInt(EXAM.no, 10) || 1;
