@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#080c12">
-<title>اجزای مانیتور — سطح ۱ / جلسه ۳</title>
+<title>اجزای کیس — سطح ۱ / جلسه ۴</title>
 <style>
 /* ============================================================
-   سطح ۱ — جلسه ۳ : اجزای مانیتور
-   صفحه • پایه • دکمه‌ی پاور • چراغ • دکمه‌های تنظیم
-   کابل برق • کابل تصویر (نمای پشت)
+   سطح ۱ — جلسه ۴ : اجزای کیس
+   دکمه‌ی پاور • ریستارت • پورت USB • جک هدفون
+   فن • پورت‌های پشت • سوکت برق
 
    تک‌فایل • آفلاین • بدون تصویر بیرونی
    برای عوض کردن درس‌ها → بخش «محتوای درس‌ها» در پایین فایل
@@ -176,7 +176,7 @@ body{
     50%{ stroke-width:5; opacity:1; }
 }
 
-/* دو نمای مانیتور: رو و پشت */
+/* دو نمای کیس: رو و پشت */
 #viewFront,
 #viewBack{
     transition:opacity .5s ease;
@@ -195,17 +195,6 @@ body{
 #scene.flip #viewBack{
     opacity:1;
     pointer-events:auto;
-}
-
-/* چراغ روی صفحه */
-#led{
-    fill:#3d4553;
-    transition:fill .4s ease;
-}
-
-#scene.on #led{
-    fill:#4ade80;
-    filter:drop-shadow(0 0 4px rgba(74,222,128,1));
 }
 
 #hintHand{
@@ -311,15 +300,6 @@ body{
     border-color:#5ee393;
     color:#05200f;
     box-shadow:0 8px 22px rgba(74,222,128,.28);
-}
-
-.btn.chip{
-    flex:0 0 auto;
-    min-width:0;
-    min-height:46px;
-    font-size:14.5px;
-    padding:0 13px;
-    border-radius:13px;
 }
 
 .btn.big{
@@ -432,14 +412,332 @@ body{
     100%{ transform:translate(var(--dx),var(--dy)) scale(1.25); opacity:0; }
 }
 
+/* =========================
+   کیس سه‌بعدی — بازی آزاد
+   ========================= */
+
+#case3d{
+    --k3scale:.5;
+    --k3rx:12deg;
+    --k3ry:-25deg;
+    position:absolute;
+    inset:0;
+    display:none;
+    perspective:1600px;
+    perspective-origin:50% 45%;
+    overflow:hidden;
+    touch-action:none;
+}
+
+#case3d.show{ display:block; }
+
+.k3-stage{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:0;
+    height:0;
+    transform-style:preserve-3d;
+    transform:scale(var(--k3scale)) rotateX(var(--k3rx)) rotateY(var(--k3ry));
+    transition:transform .07s linear;
+    cursor:grab;
+}
+
+.k3-model{
+    position:absolute;
+    left:-140px;
+    top:-260px;
+    width:280px;
+    height:520px;
+    transform-style:preserve-3d;
+}
+
+.k3-body{
+    position:absolute;
+    left:0;
+    top:0;
+    width:280px;
+    height:520px;
+    border-radius:7px;
+    background:linear-gradient(115deg,#2c2f36 0%,#1e2126 45%,#14161a 100%);
+    border:1px solid #0a0b0e;
+    box-shadow:
+        inset 3px 3px 8px rgba(255,255,255,.05),
+        inset -3px -3px 12px rgba(0,0,0,.5),
+        0 30px 60px rgba(0,0,0,.7);
+    transform-style:preserve-3d;
+}
+
+.k3-side{
+    position:absolute;
+    left:8px;
+    top:8px;
+    width:264px;
+    height:504px;
+    border-radius:6px;
+    background:linear-gradient(90deg,#0e0f12 0%,#26292f 40%,#1a1c21 70%,#0a0b0e 100%);
+    border:1px solid #050608;
+    transform:translateZ(-22px);
+    box-shadow:0 15px 25px rgba(0,0,0,.6);
+}
+
+.k3-front{
+    position:absolute;
+    left:5px;
+    top:5px;
+    width:270px;
+    height:510px;
+    border-radius:6px;
+    background:linear-gradient(105deg,#2a2d34 0%,#1c1f24 50%,#14161a 100%);
+    border:1px solid rgba(80,80,90,.5);
+    transform:translateZ(12px);
+    box-shadow:
+        inset 2px 2px 5px rgba(255,255,255,.06),
+        inset -2px -2px 8px rgba(0,0,0,.4);
+    overflow:hidden;
+}
+
+/* دکمه‌ی پاور */
+.k3-power{
+    position:absolute;
+    top:35px;
+    right:35px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#3a3d44 0%,#1a1c21 70%,#0a0b0e 100%);
+    border:2px solid #2a2d34;
+    cursor:pointer;
+    box-shadow:
+        inset 0 2px 4px rgba(255,255,255,.15),
+        inset 0 -2px 6px rgba(0,0,0,.6),
+        0 2px 5px rgba(0,0,0,.5);
+    transition:all .15s ease;
+    z-index:10;
+}
+
+.k3-power::before{
+    content:'';
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:18px;
+    height:18px;
+    margin:-9px 0 0 -9px;
+    border:2.5px solid #555;
+    border-top-color:transparent;
+    border-radius:50%;
+    transition:border-color .3s ease;
+}
+
+.k3-power::after{
+    content:'';
+    position:absolute;
+    left:50%;
+    top:9px;
+    width:2.5px;
+    height:11px;
+    background:#555;
+    transform:translateX(-50%);
+    transition:background .3s ease;
+}
+
+.k3-power.pressed{
+    transform:translateY(2px) scale(.96);
+    box-shadow:inset 0 3px 6px rgba(0,0,0,.7);
+}
+
+#case3d.on .k3-power::before{
+    border-color:#33ff77;
+    border-top-color:transparent;
+    box-shadow:0 0 8px rgba(50,255,120,.7);
+}
+
+#case3d.on .k3-power::after{
+    background:#33ff77;
+    box-shadow:0 0 8px rgba(50,255,120,.9);
+}
+
+#case3d.on .k3-power{
+    box-shadow:
+        inset 0 2px 4px rgba(255,255,255,.1),
+        inset 0 -2px 6px rgba(0,0,0,.5),
+        0 0 12px rgba(50,255,120,.5),
+        0 0 25px rgba(50,255,120,.25);
+}
+
+/* دکمه‌ی ریستارت */
+.k3-reset{
+    position:absolute;
+    top:35px;
+    right:95px;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#3a3d44 0%,#1a1c21 70%,#0a0b0e 100%);
+    border:2px solid #2a2d34;
+    cursor:pointer;
+    box-shadow:
+        inset 0 2px 4px rgba(255,255,255,.12),
+        inset 0 -2px 4px rgba(0,0,0,.6),
+        0 2px 4px rgba(0,0,0,.5);
+    transition:all .15s ease;
+    z-index:10;
+}
+
+.k3-reset::before{
+    content:'';
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:14px;
+    height:14px;
+    margin:-7px 0 0 -7px;
+    border:2px solid #555;
+    border-right-color:transparent;
+    border-radius:50%;
+}
+
+.k3-reset.pressed{
+    transform:translateY(2px) scale(.95);
+    box-shadow:inset 0 3px 6px rgba(0,0,0,.7);
+}
+
+.k3-reset.warn::before{
+    border-color:#ffaa33;
+    border-right-color:transparent;
+}
+
+/* پورت‌ها */
+.k3-ports{
+    position:absolute;
+    top:110px;
+    right:20px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    z-index:5;
+}
+
+.k3-row{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+.k3-port{
+    width:22px;
+    height:14px;
+    background:linear-gradient(180deg,#0a0b0e 0%,#1a1c21 50%,#0a0b0e 100%);
+    border:1px solid #2a2d34;
+    border-radius:2px;
+    box-shadow:inset 0 2px 4px rgba(0,0,0,.8);
+}
+
+.k3-jack{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:radial-gradient(circle,#000 0%,#0a0b0e 50%,#2a2d34 100%);
+    border:1px solid #2a2d34;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.9);
+}
+
+/* نوار RGB */
+.k3-rgb{
+    position:absolute;
+    left:0;
+    right:0;
+    top:160px;
+    height:3px;
+    background:linear-gradient(90deg,#ff0044 0%,#ff8800 20%,#ffee00 40%,#00ff88 60%,#0088ff 80%,#8800ff 100%);
+    opacity:.32;
+    transition:opacity .5s ease;
+    box-shadow:0 0 8px rgba(255,255,255,.3);
+}
+
+#case3d.on .k3-rgb{
+    opacity:1;
+    animation:k3Rgb 3s linear infinite;
+    box-shadow:0 0 12px rgba(255,255,255,.5), 0 0 24px rgba(100,150,255,.3);
+}
+
+@keyframes k3Rgb{
+    0%{ filter:hue-rotate(0deg); }
+    100%{ filter:hue-rotate(360deg); }
+}
+
+/* فن‌ها */
+.k3-fan{
+    position:absolute;
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 50%,#0a0b0e 0%,#1a1c21 50%,#2a2d34 75%,#0a0b0e 100%);
+    border:2px solid #1a1c21;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.9), 0 0 5px rgba(0,0,0,.5);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+.k3-fan1{ top:230px; left:50%; margin-left:-45px; }
+.k3-fan2{ top:340px; left:50%; margin-left:-45px; }
+
+.k3-blades{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    opacity:.85;
+    background:conic-gradient(
+        from 0deg,
+        #2a2d34 0deg,#0a0b0e 30deg,#2a2d34 45deg,#0a0b0e 75deg,
+        #2a2d34 90deg,#0a0b0e 120deg,#2a2d34 135deg,#0a0b0e 165deg,
+        #2a2d34 180deg,#0a0b0e 210deg,#2a2d34 225deg,#0a0b0e 255deg,
+        #2a2d34 270deg,#0a0b0e 300deg,#2a2d34 315deg,#0a0b0e 345deg,
+        #2a2d34 360deg
+    );
+}
+
+#case3d.on .k3-blades{ animation:k3Spin 1.2s linear infinite; }
+
+@keyframes k3Spin{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+}
+
+.k3-hub{
+    position:absolute;
+    width:30%;
+    height:30%;
+    border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,#3a3d44 0%,#1a1c21 70%,#0a0b0e 100%);
+    border:1px solid #2a2d34;
+}
+
+/* پاها */
+.k3-foot{
+    position:absolute;
+    width:40px;
+    height:14px;
+    border-radius:3px;
+    background:linear-gradient(180deg,#1a1c21,#0a0b0e);
+    transform:translateZ(-28px);
+    box-shadow:0 3px 5px rgba(0,0,0,.8);
+}
+
+.k3-f1{ left:25px; bottom:15px; }
+.k3-f2{ right:25px; bottom:15px; }
+
 @media (max-height:700px){
     #title{ font-size:20px; }
     #text{ font-size:15.5px; min-height:46px; line-height:1.7; }
     .btn{ min-height:56px; font-size:16.5px; }
-    .btn.chip{ min-height:46px; font-size:14.5px; }
     .btn.big{ min-height:74px; font-size:18px; }
     #startBig{ width:156px; height:156px; font-size:22px; }
     #panel{ padding:16px 16px 18px; }
+    #case3d{ --k3scale:.4; }
 }
 </style>
 </head>
@@ -468,119 +766,89 @@ body{
 
     <div id="stage">
         <!-- ============================================================
-             صحنه‌ی مانیتور — نمای رو و نمای پشت
+             صحنه‌ی کیس — نمای رو و نمای پشت
              ============================================================ -->
         <svg id="scene" viewBox="0 0 400 340" preserveAspectRatio="xMidYMid meet">
             <defs>
-                <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1">
+                <linearGradient id="gCase" x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0" stop-color="#414a58"/>
-                    <stop offset="1" stop-color="#1e242d"/>
+                    <stop offset=".5" stop-color="#262d38"/>
+                    <stop offset="1" stop-color="#171c24"/>
                 </linearGradient>
-                <linearGradient id="gScr" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="#1d4f7a"/>
-                    <stop offset="1" stop-color="#123449"/>
+                <linearGradient id="gPanel" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#2b333f"/>
+                    <stop offset="1" stop-color="#1e242e"/>
                 </linearGradient>
-                <linearGradient id="gStand" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0" stop-color="#242b35"/>
-                    <stop offset=".45" stop-color="#3a424e"/>
-                    <stop offset="1" stop-color="#1d232c"/>
-                </linearGradient>
-                <linearGradient id="gBack" x1="0" y1="0" x2="1" y2="1">
+                <linearGradient id="gBackC" x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0" stop-color="#333b47"/>
                     <stop offset="1" stop-color="#1a2029"/>
                 </linearGradient>
-                <filter id="fSoft" x="-60%" y="-60%" width="220%" height="220%">
+                <radialGradient id="gFanG">
+                    <stop offset="0" stop-color="#0c1118"/>
+                    <stop offset="1" stop-color="#1e242e"/>
+                </radialGradient>
+                <pattern id="pMesh" width="12" height="12" patternUnits="userSpaceOnUse">
+                    <rect width="12" height="12" fill="#141922"/>
+                    <circle cx="6" cy="6" r="3.4" fill="#080c12"/>
+                </pattern>
+                <filter id="fSoftC" x="-60%" y="-60%" width="220%" height="220%">
                     <feGaussianBlur stdDeviation="6"/>
                 </filter>
-                <clipPath id="clipScreen">
-                    <rect x="52" y="42" width="296" height="170" rx="6"/>
-                </clipPath>
             </defs>
 
-            <!-- میز -->
-            <rect x="0" y="294" width="400" height="46" fill="#121924"/>
-            <rect x="0" y="294" width="400" height="1.6" fill="#2b3644"/>
-
-            <!-- سایه -->
-            <ellipse cx="200" cy="296" rx="105" ry="7" fill="#000" opacity=".5" filter="url(#fSoft)"/>
+            <!-- کف -->
+            <rect x="0" y="300" width="400" height="40" fill="#121924"/>
+            <rect x="0" y="300" width="400" height="1.6" fill="#2b3644"/>
+            <ellipse cx="200" cy="303" rx="96" ry="7" fill="#000" opacity=".5" filter="url(#fSoftC)"/>
 
             <!-- ============================================
                  نمای رو
                  ============================================ -->
             <g id="viewFront">
 
-                <!-- پایه -->
-                <g data-part="stand" class="part">
-                    <rect x="185" y="240" width="30" height="42" fill="url(#gStand)"/>
-                    <rect x="130" y="280" width="140" height="15" rx="7.5" fill="url(#gStand)" stroke="#0a0e14" stroke-width="1.2"/>
-                    <rect x="150" y="238" width="100" height="44" rx="6" fill="transparent" pointer-events="all"/>
+                <!-- بدنه -->
+                <rect x="120" y="40" width="160" height="260" rx="9" fill="url(#gCase)" stroke="#080b10" stroke-width="2"/>
+                <rect x="128" y="48" width="144" height="244" rx="7" fill="url(#gPanel)"/>
+
+                <!-- مش جلویی -->
+                <rect x="140" y="186" width="120" height="98" rx="5" fill="url(#pMesh)"/>
+                <rect x="140" y="186" width="120" height="98" rx="5" fill="none" stroke="#0a0e14" stroke-width="1.6"/>
+
+                <!-- پورت USB -->
+                <g data-part="usb" class="part">
+                    <rect x="146" y="70" width="26" height="11" rx="2" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                    <rect x="146" y="88" width="26" height="11" rx="2" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                    <rect x="146" y="70" width="26" height="11" rx="2" fill="none" stroke="#556273" stroke-width=".8"/>
+                    <rect x="136" y="60" width="48" height="50" rx="6" fill="transparent" pointer-events="all"/>
                 </g>
 
-                <!-- بدنه + صفحه -->
-                <g data-part="screen" class="part">
-                    <rect x="40" y="30" width="320" height="210" rx="13" fill="url(#gBody)" stroke="#0a0e14" stroke-width="2"/>
-                    <rect x="52" y="42" width="296" height="170" rx="6" fill="url(#gScr)"/>
-
-                    <!-- پنجره روی صفحه -->
-                    <rect x="150" y="72" width="150" height="86" rx="5" fill="#eef3f9"/>
-                    <rect x="150" y="72" width="150" height="16" rx="5" fill="#c6d0dc"/>
-                    <circle cx="288" cy="80" r="4" fill="#e0655f"/>
-                    <rect x="162" y="98" width="92" height="6" rx="3" fill="#cdd7e2"/>
-                    <rect x="162" y="112" width="70" height="6" rx="3" fill="#dbe3ec"/>
-                    <rect x="162" y="126" width="84" height="6" rx="3" fill="#dbe3ec"/>
-
-                    <!-- آیکون‌های کوچک -->
-                    <rect x="68" y="60" width="18" height="15" rx="3" fill="#6aa8e0"/>
-                    <rect x="68" y="82" width="18" height="15" rx="3" fill="#e0b96a"/>
-                    <rect x="68" y="104" width="18" height="15" rx="3" fill="#7fd07f"/>
-
-                    <!-- ================================================
-                         والپیپر ویندوز ۱۰
-                         ۱) اول فایل محلی win10.jpg (کنار همین HTML)
-                         ۲) بعد لینک آنلاین — اگر اینترنت بود، این رو می‌گیره
-                         ۳) اگر هیچ‌کدام نبود، دسکتاپ کشیده‌شده‌ی بالا می‌مونه
-                         ================================================ -->
-                    <image href="win10.jpg" x="52" y="42" width="296" height="170"
-                           preserveAspectRatio="xMidYMid slice"
-                           clip-path="url(#clipScreen)"
-                           pointer-events="none"/>
-
-                    <image href="https://cdn.imgurl.ir/uploads/s029184_Windows_10_Enterprise_m.jpg"
-                           x="52" y="42" width="296" height="170"
-                           preserveAspectRatio="xMidYMid slice"
-                           clip-path="url(#clipScreen)"
-                           pointer-events="none"/>
-
-                    <!-- نوار وظیفه -->
-                    <rect x="52" y="196" width="296" height="16" fill="#0e1b2a" opacity=".9"/>
-                    <circle cx="64" cy="204" r="4" fill="#4ade80"/>
-                    <rect x="78" y="201" width="16" height="7" rx="2" fill="#3a5f8a"/>
-                    <rect x="100" y="201" width="16" height="7" rx="2" fill="#3a5f8a"/>
-
-                    <rect x="52" y="42" width="296" height="170" rx="6" fill="transparent" pointer-events="all"/>
-                </g>
-
-                <!-- چراغ -->
-                <g data-part="led" class="part">
-                    <circle id="led" cx="276" cy="226" r="4.5"/>
-                    <circle cx="276" cy="226" r="18" fill="transparent" pointer-events="all"/>
-                </g>
-
-                <!-- دکمه‌های تنظیم -->
-                <g data-part="buttons" class="part">
-                    <circle cx="200" cy="226" r="7" fill="#2b333f" stroke="#4a5462" stroke-width="1.3"/>
-                    <circle cx="218" cy="226" r="7" fill="#2b333f" stroke="#4a5462" stroke-width="1.3"/>
-                    <circle cx="236" cy="226" r="7" fill="#2b333f" stroke="#4a5462" stroke-width="1.3"/>
-                    <rect x="186" y="208" width="62" height="36" rx="8" fill="transparent" pointer-events="all"/>
+                <!-- جک هدفون -->
+                <g data-part="jack" class="part">
+                    <circle cx="152" cy="132" r="7" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                    <circle cx="152" cy="132" r="2.6" fill="#04060a"/>
+                    <circle cx="152" cy="154" r="7" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                    <circle cx="152" cy="154" r="2.6" fill="#04060a"/>
+                    <rect x="134" y="120" width="40" height="50" rx="6" fill="transparent" pointer-events="all"/>
                 </g>
 
                 <!-- دکمه‌ی پاور -->
                 <g data-part="power" class="part">
-                    <circle cx="326" cy="226" r="10" fill="#2b333f" stroke="#4a5462" stroke-width="1.5"/>
-                    <path d="M326 220.5 L326 226" stroke="#8b97a8" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-                    <path d="M321.6 222.6 A5.6 5.6 0 1 0 330.4 222.6" fill="none" stroke="#8b97a8" stroke-width="1.8" stroke-linecap="round"/>
-                    <circle cx="326" cy="226" r="23" fill="transparent" pointer-events="all"/>
+                    <circle cx="238" cy="76" r="13" fill="#2b333f" stroke="#4a5462" stroke-width="1.6"/>
+                    <path d="M238 68.5 L238 76" stroke="#8b97a8" stroke-width="2" stroke-linecap="round" fill="none"/>
+                    <path d="M232.4 71.2 A7 7 0 1 0 243.6 71.2" fill="none" stroke="#8b97a8" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="238" cy="76" r="26" fill="transparent" pointer-events="all"/>
                 </g>
+
+                <!-- دکمه‌ی ریستارت -->
+                <g data-part="reset" class="part">
+                    <circle cx="238" cy="126" r="8.5" fill="#2b333f" stroke="#4a5462" stroke-width="1.4"/>
+                    <circle cx="238" cy="126" r="5" fill="none" stroke="#8b97a8" stroke-width="1.6" stroke-dasharray="26 9"/>
+                    <circle cx="238" cy="126" r="23" fill="transparent" pointer-events="all"/>
+                </g>
+
+                <!-- پاها -->
+                <rect x="132" y="297" width="34" height="9" rx="4" fill="#1a2029"/>
+                <rect x="234" y="297" width="34" height="9" rx="4" fill="#1a2029"/>
 
             </g>
 
@@ -589,31 +857,46 @@ body{
                  ============================================ -->
             <g id="viewBack">
 
-                <!-- بدنه از پشت -->
-                <rect x="40" y="30" width="320" height="210" rx="13" fill="url(#gBack)" stroke="#0a0e14" stroke-width="2"/>
-                <rect x="110" y="58" width="180" height="152" rx="10" fill="#232a35" stroke="#161c24" stroke-width="1.4"/>
+                <rect x="120" y="40" width="160" height="260" rx="9" fill="url(#gBackC)" stroke="#080b10" stroke-width="2"/>
 
-                <!-- پایه (بدون قطعه) -->
-                <rect x="185" y="240" width="30" height="42" fill="url(#gStand)"/>
-                <rect x="130" y="280" width="140" height="15" rx="7.5" fill="url(#gStand)" stroke="#0a0e14" stroke-width="1.2"/>
+                <!-- فن پشت -->
+                <g data-part="fan" class="part">
+                    <circle cx="200" cy="88" r="42" fill="url(#gFanG)" stroke="#2a313c" stroke-width="2"/>
+                    <path d="M200 88 L200 52" stroke="#3a4453" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M200 88 L231 70" stroke="#3a4453" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M200 88 L231 106" stroke="#3a4453" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M200 88 L200 124" stroke="#3a4453" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M200 88 L169 106" stroke="#3a4453" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M200 88 L169 70" stroke="#3a4453" stroke-width="7" stroke-linecap="round"/>
+                    <circle cx="200" cy="88" r="13" fill="#232a34" stroke="#3a4453" stroke-width="1.6"/>
+                    <circle cx="200" cy="88" r="48" fill="transparent" pointer-events="all"/>
+                </g>
+
+                <!-- پورت‌های پشت -->
+                <g data-part="ports" class="part">
+                    <rect x="134" y="146" width="132" height="70" rx="5" fill="#1b212a" stroke="#2a313c" stroke-width="1.4"/>
+                    <rect x="144" y="156" width="22" height="12" rx="2" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <rect x="144" y="174" width="22" height="12" rx="2" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <rect x="176" y="158" width="26" height="10" rx="2" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <rect x="176" y="176" width="26" height="12" rx="2" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <circle cx="216" cy="162" r="4" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <circle cx="216" cy="178" r="4" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <circle cx="232" cy="162" r="4" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <circle cx="232" cy="178" r="4" fill="#0b0f15" stroke="#3d4655" stroke-width="1.1"/>
+                    <rect x="128" y="140" width="144" height="82" rx="6" fill="transparent" pointer-events="all"/>
+                </g>
 
                 <!-- سوکت برق -->
-                <g data-part="powerport" class="part">
-                    <rect x="136" y="178" width="42" height="24" rx="4" fill="#10151c" stroke="#3d4655" stroke-width="1.4"/>
-                    <rect x="143" y="185" width="5" height="10" rx="2" fill="#556273"/>
-                    <rect x="152" y="185" width="5" height="10" rx="2" fill="#556273"/>
-                    <rect x="161" y="185" width="5" height="10" rx="2" fill="#556273"/>
-                    <rect x="126" y="168" width="62" height="44" rx="6" fill="transparent" pointer-events="all"/>
+                <g data-part="psu" class="part">
+                    <rect x="134" y="230" width="132" height="58" rx="5" fill="#1b212a" stroke="#2a313c" stroke-width="1.4"/>
+                    <rect x="148" y="244" width="48" height="30" rx="4" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                    <rect x="156" y="252" width="6" height="13" rx="2" fill="#556273"/>
+                    <rect x="166" y="252" width="6" height="13" rx="2" fill="#556273"/>
+                    <rect x="176" y="252" width="6" height="13" rx="2" fill="#556273"/>
+                    <rect x="210" y="248" width="30" height="22" rx="3" fill="#0b0f15" stroke="#3d4655" stroke-width="1.2"/>
+                    <rect x="218" y="254" width="14" height="10" rx="2" fill="#556273"/>
+                    <rect x="128" y="224" width="144" height="70" rx="6" fill="transparent" pointer-events="all"/>
                 </g>
-
-                <!-- پورت تصویر -->
-                <g data-part="videoport" class="part">
-                    <rect x="196" y="182" width="34" height="17" rx="3" fill="#10151c" stroke="#3d4655" stroke-width="1.4"/>
-                    <rect x="201" y="187" width="24" height="7" rx="2" fill="#556273"/>
-                    <rect x="186" y="168" width="54" height="44" rx="6" fill="transparent" pointer-events="all"/>
-                </g>
-
-                <text x="240" y="150" text-anchor="middle" font-size="15" font-family="Tahoma" fill="#7c8798" opacity=".65">پشت مانیتور</text>
 
             </g>
 
@@ -634,6 +917,33 @@ body{
             </g>
 
         </svg>
+
+        <!-- ============================================================
+             بازی آزاد — کیس سه‌بعدی
+             ============================================================ -->
+        <div id="case3d">
+            <div class="k3-stage">
+                <div class="k3-model">
+                    <div class="k3-body">
+                        <div class="k3-side"></div>
+                        <div class="k3-front">
+                            <div class="k3-power" id="k3power"></div>
+                            <div class="k3-reset" id="k3reset"></div>
+                            <div class="k3-ports">
+                                <div class="k3-row"><div class="k3-port"></div><div class="k3-port"></div></div>
+                                <div class="k3-row"><div class="k3-port"></div><div class="k3-port"></div></div>
+                                <div class="k3-row"><div class="k3-jack"></div><div class="k3-jack"></div></div>
+                            </div>
+                            <div class="k3-rgb"></div>
+                            <div class="k3-fan k3-fan1"><div class="k3-blades"></div><div class="k3-hub"></div></div>
+                            <div class="k3-fan k3-fan2"><div class="k3-blades"></div><div class="k3-hub"></div></div>
+                        </div>
+                        <div class="k3-foot k3-f1"></div>
+                        <div class="k3-foot k3-f2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="panel">
@@ -654,63 +964,64 @@ body{
    ============================================================ */
 
 var PARTS = {
-    screen:    ['صفحه',           'همه‌ی کارها اینجا دیده می‌شه. مثل صورت.'],
-    stand:     ['پایه',           'مانیتور رو نگه می‌داره که نیفته.'],
-    power:     ['دکمه‌ی پاور',     'مانیتور خودش یه دکمه‌ی پاور داره، جدا از کیس.'],
-    led:       ['چراغ',           'وقتی مانیتور روشنه، این چراغ سبز می‌شه.'],
-    buttons:   ['دکمه‌های تنظیم',  'با اینا روشنایی صفحه رو کم و زیاد می‌کنی.'],
-    powerport: ['سوکت برق',       'کابل برق اینجا وصل می‌شه.'],
-    videoport: ['سوکت تصویر',     'کابل تصویر اینجا وصل می‌شه و از کیس میاد.']
+    power: ['دکمه‌ی پاور',    'با این کامپیوتر روشن می‌شه. یه بار کوتاه بزن.'],
+    reset: ['دکمه‌ی ریستارت', 'این رو الکی نزن! فقط وقتی کامپیوتر کامل گیر کرد.'],
+    usb:   ['پورت USB',      'فلش و ماوس اینجا وصل می‌شن.'],
+    jack:  ['جک هدفون',      'هدفون و میکروفون اینجا می‌رن.'],
+    fan:   ['فن',            'گرمای داخل رو بیرون می‌ده. راهش رو نبند.'],
+    ports: ['پورت‌های پشت',   'کیبورد و ماوس و مانیتور هم اینجا وصل می‌شن.'],
+    psu:   ['سوکت برق',      'کابل برق اینجا وصل می‌شه.']
 };
 
 /* محل حلقه‌ی نشانگر: [cx, cy, rx, ry] */
 var RING_POS = {
-    screen:    [200, 125, 158, 100],
-    stand:     [200, 264, 80, 34],
-    power:     [326, 226, 30, 30],
-    led:       [276, 226, 24, 24],
-    buttons:   [218, 226, 42, 26],
-    powerport: [157, 190, 36, 28],
-    videoport: [213, 190, 34, 28]
+    power: [238, 76, 33, 33],
+    reset: [238, 126, 27, 27],
+    usb:   [159, 84, 34, 34],
+    jack:  [152, 143, 26, 38],
+    fan:   [200, 88, 54, 54],
+    ports: [200, 181, 76, 47],
+    psu:   [200, 259, 76, 42]
 };
 
 /* محل دست راهنما */
 var HINT_POS = {
-    screen:    [200, 16],
-    stand:     [200, 236],
-    power:     [326, 196],
-    led:       [276, 198],
-    buttons:   [218, 198],
-    powerport: [157, 158],
-    videoport: [213, 158]
+    power: [238, 42],
+    reset: [238, 94],
+    usb:   [159, 42],
+    jack:  [152, 102],
+    fan:   [200, 30],
+    ports: [200, 124],
+    psu:   [200, 208]
 };
 
 /* ترتیب درس‌ها */
 var LESSON = [
     { t:'intro' },
 
-    { t:'teach', part:'screen'  },
-    { t:'teach', part:'stand'   },
-    { t:'teach', part:'power'   },
-    { t:'teach', part:'led'     },
-    { t:'teach', part:'buttons' },
+    { t:'teach', part:'power' },
+    { t:'teach', part:'reset' },
+    { t:'teach', part:'usb'   },
+    { t:'teach', part:'jack'  },
 
-    { t:'find',  part:'screen',  ask:'صفحه رو پیدا کن'          },
-    { t:'find',  part:'stand',   ask:'پایه رو پیدا کن'           },
-    { t:'find',  part:'power',   ask:'دکمه‌ی پاور رو پیدا کن'    },
-    { t:'find',  part:'buttons', ask:'دکمه‌های تنظیم رو پیدا کن'  },
+    { t:'find',  part:'power', ask:'دکمه‌ی پاور رو پیدا کن'  },
+    { t:'find',  part:'usb',   ask:'پورت USB رو پیدا کن'    },
+    { t:'find',  part:'jack',  ask:'جک هدفون رو پیدا کن'    },
+    { t:'find',  part:'reset', ask:'دکمه‌ی ریستارت رو پیدا کن' },
 
-    { t:'name',  part:'power'   },
-    { t:'name',  part:'led'     },
-    { t:'name',  part:'buttons' },
+    { t:'name',  part:'power' },
+    { t:'name',  part:'usb'   },
+    { t:'name',  part:'jack'  },
 
-    { t:'teach', part:'powerport', flip:true },
-    { t:'teach', part:'videoport', flip:true },
+    { t:'teach', part:'fan',   flip:true },
+    { t:'teach', part:'ports', flip:true },
+    { t:'teach', part:'psu',   flip:true },
 
-    { t:'find',  part:'powerport', flip:true, ask:'سوکت برق رو پیدا کن'   },
-    { t:'find',  part:'videoport', flip:true, ask:'سوکت تصویر رو پیدا کن' },
+    { t:'find',  part:'fan',   flip:true, ask:'فن رو پیدا کن'          },
+    { t:'find',  part:'ports', flip:true, ask:'پورت‌های پشت رو پیدا کن' },
+    { t:'find',  part:'psu',   flip:true, ask:'سوکت برق رو پیدا کن'    },
 
-    { t:'chain', parts:['screen','power','buttons','led'] }
+    { t:'chain', parts:['power','usb','jack','reset'] }
 ];
 
 /* ============================================================
@@ -718,6 +1029,7 @@ var LESSON = [
    ============================================================ */
 
 var scene    = document.getElementById('scene');
+var k3El     = document.getElementById('case3d');
 var dotsEl   = document.getElementById('dots');
 var countEl  = document.getElementById('counter');
 var homeEl   = document.getElementById('home');
@@ -857,29 +1169,53 @@ function startLesson(){
     render();
 }
 
+function showCase3D(){
+    mode = 'case3d';
+    render();
+}
+
 /* ---------------- صفحه‌ی منو ---------------- */
 
 function renderMenu(){
     scene.style.display = '';
-    scene.classList.remove('on');
+    k3El.classList.remove('show');
     clearMarks();
     replayAnim();
     setTop(false, false, false);
-    titleEl.textContent = 'جلسه‌ی ۳ — مانیتور';
+    titleEl.textContent = 'جلسه‌ی ۴ — کیس';
     textEl.textContent  = 'کدوم قسمت رو می‌خوای ببینی؟';
     setButtons([
         {
-            html: 'شروع درس<small>صفحه • پایه • پاور • چراغ • تنظیم • کابل‌ها</small>',
+            html: 'شروع درس<small>پاور • ریستارت • USB • هدفون • فن • پورت‌های پشت</small>',
             cls: 'big main',
             onClick: startLesson
+        },
+        {
+            html: 'کیس سه‌بعدی<small>بچرخونش و پاورش رو بزن</small>',
+            cls: 'big',
+            onClick: showCase3D
         }
     ]);
+}
+
+/* ---------------- بازی آزاد سه‌بعدی ---------------- */
+
+function renderCase3D(){
+    scene.style.display = 'none';
+    k3El.classList.add('show');
+    clearMarks();
+    replayAnim();
+    setTop(false, true, false);
+    titleEl.textContent = 'کیس سه‌بعدی';
+    textEl.textContent  = 'بچرخونش. بعد دکمه‌ی پاور رو بزن تا روشن شه.';
+    setButtons([{ label:'برگشت به منو', cls:'main', onClick: showMenu }]);
 }
 
 /* ---------------- نمایش مرحله ---------------- */
 
 function render(){
     if(mode === 'menu'){ renderMenu(); return; }
+    if(mode === 'case3d'){ renderCase3D(); return; }
 
     var s = LESSON[i];
     lock = false;
@@ -889,6 +1225,7 @@ function render(){
     replayAnim();
 
     scene.style.display = '';
+    k3El.classList.remove('show');
     setTop(true, true, true);
 
     if(s.flip){ scene.classList.add('flip'); }
@@ -903,8 +1240,8 @@ function render(){
 
     /* ---------- ورود ---------- */
     if(s.t === 'intro'){
-        titleEl.textContent = 'مانیتور رو بشناسیم';
-        textEl.textContent  = 'مانیتور صورتِ کامپیوتره. کار اصلی توی کیسه، ولی نتیجه اینجا دیده می‌شه.';
+        titleEl.textContent = 'کیس رو بشناسیم';
+        textEl.textContent  = 'کیس جعبه‌ی اصلیه. همه‌ی کارهای کامپیوتر توش انجام می‌شه. مثل مغز.';
         actEl.innerHTML = '';
         var big = document.createElement('button');
         big.id = 'startBig';
@@ -1012,7 +1349,7 @@ function correct(el){
             } else {
                 stars();
                 titleEl.textContent = 'آفرین!';
-                textEl.textContent  = 'همه‌ی قسمتای مانیتور رو شناختی.';
+                textEl.textContent  = 'همه‌ی قسمتای کیس رو شناختی.';
                 setButtons([{ label:'برگشت به منو', cls:'main', onClick: showMenu }]);
             }
             return;
@@ -1070,12 +1407,13 @@ homeEl.onclick = function(){
     showMenu();
 };
 
-/* ---------------- چرخش ملایم صحنه ---------------- */
+/* ---------------- چرخش ملایم صحنه‌ی SVG ---------------- */
 
 var stageEl = document.getElementById('stage');
 var dragX = 0, dragY = 0, dragging = false, moved = false, suppressClick = false;
 
 stageEl.addEventListener('pointerdown', function(e){
+    if(k3El.classList.contains('show')) return;
     dragging = true;
     moved = false;
     dragX = e.clientX;
@@ -1109,6 +1447,84 @@ function endDrag(){
 stageEl.addEventListener('pointerup', endDrag);
 stageEl.addEventListener('pointercancel', endDrag);
 stageEl.addEventListener('pointerleave', endDrag);
+
+/* ============================================================
+   کیس سه‌بعدی
+   ============================================================ */
+
+var k3    = k3El;
+var k3rx  = 12;
+var k3ry  = -25;
+var k3on  = false;
+var k3lx  = 0;
+var k3ly  = 0;
+
+k3.addEventListener('pointerdown', function(e){
+    if(e.target.closest('.k3-power') || e.target.closest('.k3-reset')) return;
+    k3on = true;
+    k3lx = e.clientX;
+    k3ly = e.clientY;
+    try{ k3.setPointerCapture(e.pointerId); }catch(err){}
+});
+
+k3.addEventListener('pointermove', function(e){
+    if(!k3on) return;
+    var dx = e.clientX - k3lx;
+    var dy = e.clientY - k3ly;
+    k3ry += dx * 0.45;
+    k3rx -= dy * 0.42;
+    k3rx = Math.max(-22, Math.min(62, k3rx));
+    k3.style.setProperty('--k3rx', k3rx + 'deg');
+    k3.style.setProperty('--k3ry', k3ry + 'deg');
+    k3lx = e.clientX;
+    k3ly = e.clientY;
+});
+
+function k3Stop(){ k3on = false; }
+
+k3.addEventListener('pointerup', k3Stop);
+k3.addEventListener('pointercancel', k3Stop);
+
+/* دکمه‌ی پاور */
+var k3powerEl = document.getElementById('k3power');
+var k3state = false;
+
+k3powerEl.addEventListener('pointerdown', function(e){
+    e.stopPropagation();
+    k3powerEl.classList.add('pressed');
+    k3state = !k3state;
+    if(k3state){ k3.classList.add('on'); } else { k3.classList.remove('on'); }
+    vibrate(k3state ? [30, 40, 30] : 45);
+});
+
+function k3powerUp(e){
+    e.stopPropagation();
+    k3powerEl.classList.remove('pressed');
+}
+
+k3powerEl.addEventListener('pointerup', k3powerUp);
+k3powerEl.addEventListener('pointerleave', k3powerUp);
+k3powerEl.addEventListener('pointercancel', k3powerUp);
+
+/* دکمه‌ی ریستارت — فقط هشدار، نه ریست واقعی */
+var k3resetEl = document.getElementById('k3reset');
+
+k3resetEl.addEventListener('pointerdown', function(e){
+    e.stopPropagation();
+    k3resetEl.classList.add('pressed','warn');
+    vibrate([50, 40, 50]);
+    textEl.textContent = 'این دکمه رو الکی نزن! فقط وقتی کامپیوتر کامل گیر کرد.';
+});
+
+function k3resetUp(e){
+    e.stopPropagation();
+    k3resetEl.classList.remove('pressed');
+    setTimeout(function(){ k3resetEl.classList.remove('warn'); }, 500);
+}
+
+k3resetEl.addEventListener('pointerup', k3resetUp);
+k3resetEl.addEventListener('pointerleave', k3resetUp);
+k3resetEl.addEventListener('pointercancel', k3resetUp);
 
 /* ---------------- جلوگیری از زوم ---------------- */
 
