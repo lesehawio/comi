@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080c12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="کامی">
+<title>امتحان ۵ — کلیدهای مهم کیبورد</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="exam.css">
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   امتحان ۵ — کلیدهای مهم کیبورد
+   ============================================================ */
+
+window.EXAM = {
+    no: 5,
+    title: 'امتحان ۵ — کلیدهای مهم کیبورد',
+    qs: [
+        { cap:'Space', q:'این کلید چیکار می‌کنه؟',
+          opts:['فاصله می‌ندازه','می‌ره خط بعد','پاک می‌کنه'], a:0 },
+
+        { cap:'Enter', q:'این کلید چیکار می‌کنه؟',
+          opts:['تأیید می‌کنه','فاصله می‌ندازه','حرف بزرگ می‌کند'], a:0 },
+
+        { cap:'Backspace', q:'این کلید چیکار می‌کنه؟',
+          opts:['حرف قبلی را پاک می‌کند','حرف جلویی را پاک می‌کند','همه را پاک می‌کند'], a:0 },
+
+        { cap:'Delete', q:'این کلید چیکار می‌کنه؟',
+          opts:['حرف جلویی را پاک می‌کند','حرف قبلی را پاک می‌کند','فاصله می‌ندازه'], a:0 },
+
+        { cap:'Shift', q:'این کلید چیکار می‌کنه؟',
+          opts:['یک حرف را بزرگ می‌کند','همه‌ی حروف را بزرگ می‌کند','صفحه را تازه می‌کند'], a:0 },
+
+        { cap:'Caps Lock', q:'این کلید چیکار می‌کنه؟',
+          opts:['یک حرف بزرگ','همه‌ی حروف را بزرگ می‌کند','پنجره را می‌بندد'], a:1 },
+
+        { cap:'Esc', q:'این کلید چیکار می‌کنه؟',
+          opts:['ذخیره می‌کند','یعنی بی‌خیال شو','چاپ می‌کند'], a:1 },
+
+        { cap:'', q:'کلیدهای جهت (فلش‌ها) چه کاری می‌کنند؟',
+          opts:['نشانگر را جابه‌جا می‌کنند','حرف می‌نویسند','صفحه را چاپ می‌کنند'], a:0 }
+    ]
+};
+</script>
+<script src="exam.js"></script>
+
+</body>
+</html>
