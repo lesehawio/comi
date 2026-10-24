@@ -13,7 +13,6 @@
 <style>
 /* ============================================================
    کامی — آموزش کامپیوتر
-   تم: نئون بنفش-آبی الهام‌گرفته از تصاویر
    ============================================================ */
 
 :root{
@@ -65,7 +64,6 @@ body{
     isolation:isolate;
 }
 
-/* نورهای پس‌زمینه — بنفش و آبی */
 #app::before{
     content:'';
     position:absolute;
@@ -96,7 +94,7 @@ body{
 .screen.show{ display:flex; }
 
 /* ============================================================
-   هدر منو — اسلایدر تمام‌عرض + نوار کاملاً شفاف روی آن
+   هدر منو
    ============================================================ */
 
 .menu-head{
@@ -141,7 +139,6 @@ body{
     pointer-events:none;
 }
 
-/* محو شدن تدریجی پایین هدر */
 .menu-head::after{
     content:'';
     position:absolute;
@@ -158,7 +155,6 @@ body{
     );
 }
 
-/* نوار روی هدر — بدون پس‌زمینه، فقط متن و شیشه */
 .menu-bar{
     position:absolute;
     top:0; left:0; right:0;
@@ -168,9 +164,7 @@ body{
     align-items:center;
     gap:10px;
     padding:0 14px;
-    /* ✅ بدون بک‌گراند — کاملاً شفاف */
     background:transparent;
-    /* سایه‌ی متن برای خوانایی روی هر تصویری */
 }
 
 .brand{
@@ -203,7 +197,6 @@ body{
     height:38px;
     padding:0 12px 0 8px;
     border-radius:20px;
-    /* ✅ شیشه‌ی شفاف خیلی ملایم */
     border:1px solid rgba(255,255,255,.14);
     background:rgba(10,6,24,.22);
     backdrop-filter:blur(10px);
@@ -220,18 +213,14 @@ body{
 
 .prof:active{ transform:scale(.96); background:rgba(10,6,24,.4); }
 
-.prof b{
-    display:grid;
-    place-items:center;
+.prof-av{
     width:24px;
     height:24px;
     flex:0 0 auto;
-    border-radius:50%;
-    background:linear-gradient(180deg,#c084fc,#7c3aed);
-    color:#fff;
-    font-size:12px;
-    font-weight:bold;
-    box-shadow:0 3px 10px rgba(168,85,247,.6);
+    border-radius:7px;
+    object-fit:cover;
+    background:#2b2340;
+    box-shadow:0 3px 10px rgba(168,85,247,.5);
 }
 
 .prof span{
@@ -313,7 +302,7 @@ body{
 }
 
 /* ============================================================
-   کارت شیشه‌ای — با تم بنفش
+   کارت
    ============================================================ */
 
 .card{
@@ -457,7 +446,7 @@ body{
 .ghost:active{ transform:scale(.95); background:rgba(168,85,247,.28); }
 
 /* ============================================================
-   پروفایل (خوش‌آمد)
+   پروفایل
    ============================================================ */
 
 .center{
@@ -571,7 +560,7 @@ h1{
 }
 
 /* ============================================================
-   قاب درس و امتحان
+   قاب
    ============================================================ */
 
 #frame{
@@ -624,14 +613,17 @@ h1{
     width:48px;
     height:48px;
     flex:0 0 auto;
-    border-radius:50%;
-    display:grid;
-    place-items:center;
-    background:linear-gradient(180deg,#c084fc,#7c3aed);
-    color:#fff;
-    font-size:20px;
-    font-weight:bold;
-    box-shadow:0 6px 18px rgba(168,85,247,.55), inset 0 1px 0 rgba(255,255,255,.4);
+    border-radius:14px;
+    overflow:hidden;
+    background:#2b2340;
+    box-shadow:0 6px 18px rgba(168,85,247,.45), inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+.stu-avatar img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
 .stu-info{
@@ -941,6 +933,22 @@ h1{
     margin-top:10px;
 }
 
+.av-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.av-prev{
+    width:56px;
+    height:56px;
+    flex:0 0 auto;
+    border-radius:16px;
+    object-fit:cover;
+    background:#2b2340;
+    box-shadow:0 6px 18px rgba(168,85,247,.45), inset 0 1px 0 rgba(255,255,255,.2);
+}
+
 /* ============================================================
    واکنش‌گرا
    ============================================================ */
@@ -953,7 +961,7 @@ h1{
     .icon{ width:34px; height:34px; }
     .icon svg{ width:16px; height:16px; }
     .prof{ height:34px; font-size:12px; max-width:120px; }
-    .prof b{ width:22px; height:22px; font-size:11px; }
+    .prof-av{ width:22px; height:22px; border-radius:6px; }
     .hdr{ height:54px; }
 }
 
@@ -979,16 +987,12 @@ h1{
 
 <div id="app">
 
-    <!-- ============================================================
-         پروفایل — فقط بار اول
-         ============================================================ -->
+    <!-- پروفایل -->
     <section id="scProfile" class="screen show">
         <div class="center">
-
             <div class="hero">
                 <img src="https://raw.githubusercontent.com/lesehawio/comi/main/A/comi1.png" alt="کامی">
             </div>
-
             <div class="panel">
                 <h1>خوش آمدی</h1>
                 <p class="lead">
@@ -999,19 +1003,13 @@ h1{
                 <button id="saveName" class="btn solid">ذخیره و ادامه</button>
                 <p class="note">این اطلاعات فقط روی همین گوشی ذخیره می‌شود.</p>
             </div>
-
         </div>
     </section>
 
-    <!-- ============================================================
-         منو
-         ============================================================ -->
+    <!-- منو -->
     <section id="scMenu" class="screen">
-
         <div class="menu-head">
-
             <div class="slide-track" id="slideTrack"></div>
-
             <div class="menu-bar">
                 <div class="brand">
                     <img src="https://raw.githubusercontent.com/lesehawio/comi/main/A/comi1.png" alt="کامی">
@@ -1019,35 +1017,27 @@ h1{
                 </div>
                 <div class="spacer"></div>
                 <button class="prof" id="profChip">
-                    <b id="profLetter">؟</b>
+                    <img id="profAvatar" class="prof-av" alt="">
                     <span id="profName">—</span>
                 </button>
             </div>
-
         </div>
-
         <div class="body">
-
             <div class="secLabel">درس</div>
-
             <div class="card">
                 <span class="tag">درس</span>
                 <h2 id="lessonTitle">—</h2>
                 <p id="lessonSub">—</p>
                 <button class="btn solid" id="openLesson">شروع درس</button>
             </div>
-
             <div class="secLabel">امتحان</div>
-
             <div class="card">
                 <span class="tag amber">امتحان</span>
                 <h2 id="examTitle">—</h2>
                 <p id="examSub">—</p>
                 <button class="btn amber" id="openExam">شروع امتحان</button>
             </div>
-
             <div class="secLabel">نتیجه</div>
-
             <div class="card slim">
                 <div style="flex:1;min-width:0">
                     <div class="k">کارنامه</div>
@@ -1055,13 +1045,10 @@ h1{
                 </div>
                 <button class="ghost" id="openReport">دیدن</button>
             </div>
-
         </div>
     </section>
 
-    <!-- ============================================================
-         نمایش درس یا امتحان
-         ============================================================ -->
+    <!-- نمایش درس یا امتحان -->
     <section id="scView" class="screen">
         <header class="hdr">
             <button class="icon" id="viewBack" title="برگشت">
@@ -1075,9 +1062,7 @@ h1{
         <iframe id="frame" title="محتوا"></iframe>
     </section>
 
-    <!-- ============================================================
-         کارنامه
-         ============================================================ -->
+    <!-- کارنامه -->
     <section id="scReport" class="screen">
         <header class="hdr">
             <button class="icon" id="repBack" title="برگشت">
@@ -1091,9 +1076,7 @@ h1{
         <div id="repBody"></div>
     </section>
 
-    <!-- ============================================================
-         تنظیمات
-         ============================================================ -->
+    <!-- تنظیمات -->
     <section id="scSet" class="screen">
         <header class="hdr">
             <button class="icon" id="setBack" title="برگشت">
@@ -1104,17 +1087,20 @@ h1{
             <div class="ht">تنظیمات</div>
             <div class="spacer" style="flex:0 0 38px"></div>
         </header>
-
         <div id="setBody">
-
             <div class="field">
                 <label>اسم</label>
                 <input id="setName" class="inp" type="text" placeholder="اسمت" autocomplete="off">
                 <button class="btn" id="setNameSave" style="margin-top:12px">ذخیره‌ی اسم</button>
             </div>
-
+            <div class="field">
+                <label>آواتار</label>
+                <div class="av-row">
+                    <img id="avPreview" class="av-prev" alt="">
+                    <button class="btn" id="avShuffle" style="flex:1">یکی دیگر</button>
+                </div>
+            </div>
             <div id="setMsg" class="tiny" style="text-align:center"></div>
-
         </div>
     </section>
 
@@ -1134,12 +1120,24 @@ var EXAM_TITLE   = 'امتحان 5';
 var EXAM_SUB     = '۸ سؤال چهارگزینه‌ای';
 
 /* ============================================================
-   ۲) ذخیره‌سازی
+   ۲) آواتار — DiceBear Bottts Neutral
+   ============================================================ */
+
+function avatarUrl(seed, size){
+    var s = String(seed || ST.name || 'kami');
+    var n = size || 96;
+    return 'https://api.dicebear.com/10.x/bottts-neutral/svg'
+         + '?seed=' + encodeURIComponent(s)
+         + '&size=' + n;
+}
+
+/* ============================================================
+   ۳) ذخیره‌سازی
    ============================================================ */
 
 var KEY = 'kami_level1_v1';
 
-var ST = { name:'', scores:[] };
+var ST = { name:'', avatarSeed:'', scores:[] };
 
 function loadState(){
     try{
@@ -1147,19 +1145,31 @@ function loadState(){
         if(raw){
             var o = JSON.parse(raw);
             if(o && typeof o === 'object'){
-                ST.name   = o.name   || '';
-                ST.scores = o.scores || [];
+                ST.name       = o.name       || '';
+                ST.avatarSeed = o.avatarSeed || '';
+                ST.scores     = o.scores     || [];
             }
         }
     }catch(e){}
 }
 
 function saveState(){
-    try{ localStorage.setItem(KEY, JSON.stringify(ST)); }catch(e){}
+    try{
+        var prev = {};
+        try{ prev = JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){}
+
+        localStorage.setItem(KEY, JSON.stringify({
+            name:       ST.name,
+            avatarSeed: ST.avatarSeed,
+            scores:     ST.scores,
+            done:       prev.done  || {},
+            sheet:      prev.sheet || ''
+        }));
+    }catch(e){}
 }
 
 /* ============================================================
-   ۳) ابزار
+   ۴) ابزار
    ============================================================ */
 
 var FA = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
@@ -1186,18 +1196,11 @@ function show(which){
     el(which).classList.add('show');
 }
 
-function initialOf(name){
-    var s = String(name || '').trim();
-    return s ? s.charAt(0) : '؟';
-}
-
 function prettyDate(iso){
     if(!iso) return '';
     try{
         var d = new Date(iso);
-        if(isNaN(d.getTime())){
-            return String(iso);
-        }
+        if(isNaN(d.getTime())){ return String(iso); }
 
         var faDate = '';
         try{
@@ -1227,7 +1230,7 @@ function prettyDate(iso){
 }
 
 /* ============================================================
-   ۴) پروفایل
+   ۵) پروفایل
    ============================================================ */
 
 var NAME_LOCK = false;
@@ -1259,12 +1262,13 @@ el('nameInput').addEventListener('keydown', function(e){
 });
 
 /* ============================================================
-   ۵) منو
+   ۶) منو
    ============================================================ */
 
 function paintProfile(){
-    el('profName').textContent   = ST.name || '—';
-    el('profLetter').textContent = initialOf(ST.name);
+    el('profName').textContent = ST.name || '—';
+    var av = el('profAvatar');
+    if(av){ av.src = avatarUrl(ST.avatarSeed || ST.name, 48); }
 }
 
 function openMenu(){
@@ -1303,7 +1307,7 @@ el('profChip').onclick = function(){
 };
 
 /* ============================================================
-   ۶) نمایش درس یا امتحان
+   ۷) نمایش درس یا امتحان
    ============================================================ */
 
 function openViewer(file, title){
@@ -1334,17 +1338,19 @@ window.addEventListener('message', function(e){
 });
 
 /* ============================================================
-   ۷) کارنامه
+   ۸) کارنامه
    ============================================================ */
 
 function openReport(){
     show('scReport');
 
+    var avSrc = avatarUrl(ST.avatarSeed || ST.name, 96);
+
     if(!ST.scores.length){
         el('repBody').innerHTML =
             '<div class="student-card">' +
                 '<div class="stu-row">' +
-                    '<div class="stu-avatar">' + escapeHtml(initialOf(ST.name)) + '</div>' +
+                    '<div class="stu-avatar"><img src="' + avSrc + '" alt=""></div>' +
                     '<div class="stu-info">' +
                         '<div class="nm">' + escapeHtml(ST.name || 'بی‌نام') + '</div>' +
                         '<div class="st"><span class="dot"></span>هنوز امتحانی نداده‌ای</div>' +
@@ -1382,7 +1388,7 @@ function openReport(){
 
     h += '<div class="student-card">';
     h +=   '<div class="stu-row">';
-    h +=     '<div class="stu-avatar">' + escapeHtml(initialOf(ST.name)) + '</div>';
+    h +=     '<div class="stu-avatar"><img src="' + avSrc + '" alt=""></div>';
     h +=     '<div class="stu-info">';
     h +=       '<div class="nm">' + escapeHtml(ST.name || 'بی‌نام') + '</div>';
     h +=       '<div class="st"><span class="dot" style="background:' + statusColor + ';box-shadow:0 0 8px ' + statusColor + '"></span>' + status + '</div>';
@@ -1442,7 +1448,7 @@ function openReport(){
 }
 
 /* ============================================================
-   ساخت JSON
+   ۹) JSON
    ============================================================ */
 
 function buildStudentJson(){
@@ -1451,7 +1457,8 @@ function buildStudentJson(){
         version:  '1.0',
         exported: new Date().toISOString(),
         student: {
-            name: ST.name || 'بی‌نام'
+            name:   ST.name || 'بی‌نام',
+            avatar: avatarUrl(ST.avatarSeed || ST.name, 96)
         },
         summary: (function(){
             var n = ST.scores.length;
@@ -1567,12 +1574,13 @@ function showToast(text, color){
 }
 
 /* ============================================================
-   ۸) تنظیمات
+   ۱۰) تنظیمات
    ============================================================ */
 
 function openSettings(){
     el('setName').value  = ST.name || '';
     el('setMsg').textContent = '';
+    el('avPreview').src = avatarUrl(ST.avatarSeed || ST.name, 96);
     show('scSet');
 }
 
@@ -1583,14 +1591,24 @@ el('setNameSave').onclick = function(){
         el('setMsg').textContent = 'اسم ذخیره شد';
         el('setMsg').style.color = '#4ade80';
         paintProfile();
+        el('avPreview').src = avatarUrl(ST.avatarSeed || ST.name, 96);
     } else {
         el('setMsg').textContent = 'اسم را بنویس';
         el('setMsg').style.color = '#fca5a5';
     }
 };
 
+el('avShuffle').onclick = function(){
+    ST.avatarSeed = Math.random().toString(36).slice(2, 10);
+    saveState();
+    var src = avatarUrl(ST.avatarSeed, 96);
+    el('avPreview').src = src;
+    paintProfile();
+    vibrate(15);
+};
+
 /* ============================================================
-   ۹) اسلایدر هدر
+   ۱۱) اسلایدر هدر
    ============================================================ */
 
 var SLIDES = [
@@ -1607,7 +1625,6 @@ var slideIndex = -1;
 var slideNodes = [];
 
 function buildSlider(){
-
     var track = document.getElementById('slideTrack');
     if(!track) return;
 
@@ -1615,7 +1632,6 @@ function buildSlider(){
     slideNodes = [];
 
     for(var k = 0; k < SLIDES.length; k++){
-
         var s = document.createElement('div');
         s.className = 'slide';
 
@@ -1631,7 +1647,6 @@ function buildSlider(){
 }
 
 function pickRandomIndex(){
-
     if(SLIDES.length <= 1) return 0;
 
     var n;
@@ -1644,12 +1659,10 @@ function pickRandomIndex(){
     if(n === slideIndex){
         n = (slideIndex + 1) % SLIDES.length;
     }
-
     return n;
 }
 
 function nextSlide(){
-
     if(!slideNodes.length) return;
 
     var newIndex = pickRandomIndex();
@@ -1664,9 +1677,7 @@ function nextSlide(){
 }
 
 function startSlider(){
-
     buildSlider();
-
     if(!slideNodes.length) return;
 
     slideIndex = Math.floor(Math.random() * SLIDES.length);
@@ -1687,7 +1698,7 @@ document.addEventListener('visibilitychange', function(){
 });
 
 /* ============================================================
-   ۱۰) شروع
+   ۱۲) شروع
    ============================================================ */
 
 document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
