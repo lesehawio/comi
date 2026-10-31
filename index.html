@@ -55,8 +55,8 @@ body{
 }
 
 #app{
-    height:100dvh;
     height:100vh;
+    height:100dvh;
     max-width:520px;
     margin:0 auto;
     position:relative;
@@ -1045,9 +1045,16 @@ h1{
                 </div>
                 <button class="ghost" id="openReport">دیدن</button>
             </div>
+            <div class="secLabel">آرشیو</div>
+            <div class="card slim">
+                <div style="flex:1;min-width:0">
+                    <div class="k">آرشیو جلسات</div>
+                    <div class="v">جلسه‌های قبلی</div>
+                </div>
+                <button class="ghost" id="openArchive">دیدن</button>
+            </div>
         </div>
     </section>
-
     <!-- نمایش درس یا امتحان -->
     <section id="scView" class="screen">
         <header class="hdr">
@@ -1118,6 +1125,9 @@ var LESSON_SUB   = '  فاصله • اینتر • شیفت • کپس‌لاک
 var EXAM_FILE    = 'e-5.html';
 var EXAM_TITLE   = 'امتحان 5';
 var EXAM_SUB     = '۸ سؤال چهارگزینه‌ای';
+
+var ARCHIVE_FILE  = 'B/index.html';
+var ARCHIVE_TITLE = 'آرشیو جلسات';
 
 /* ============================================================
    ۲) آواتار — DiceBear Bottts Neutral
@@ -1310,24 +1320,39 @@ el('profChip').onclick = function(){
    ۷) نمایش درس یا امتحان
    ============================================================ */
 
-function openViewer(file, title){
+/* مقصد برگشت دکمه‌ی back در صفحه‌ی نمایش:
+   'menu'    → منوی اصلی
+   'archive' → آرشیو جلسات
+*/
+var viewReturn = 'menu';
+
+function openViewer(file, title, ret){
     el('viewTitle').textContent = title;
     el('frame').src = file;
+    viewReturn = (ret === 'archive') ? 'archive' : 'menu';
     show('scView');
     vibrate(20);
 }
 
 el('openLesson').onclick = function(){
-    openViewer(LESSON_FILE, LESSON_TITLE);
+    openViewer(LESSON_FILE, LESSON_TITLE, 'menu');
 };
 
 el('openExam').onclick = function(){
-    openViewer(EXAM_FILE, EXAM_TITLE);
+    openViewer(EXAM_FILE, EXAM_TITLE, 'menu');
+};
+
+el('openArchive').onclick = function(){
+    openViewer(ARCHIVE_FILE, ARCHIVE_TITLE, 'menu');
 };
 
 el('viewBack').onclick = function(){
     el('frame').src = 'about:blank';
-    openMenu();
+    if(viewReturn === 'archive'){
+        openViewer(ARCHIVE_FILE, ARCHIVE_TITLE, 'menu');
+    } else {
+        openMenu();
+    }
 };
 
 window.addEventListener('message', function(e){
