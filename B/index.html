@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0618">
+<title>آرشیو جلسات — کامی</title>
+<style>
+:root{
+    --bg:#0a0618;
+    --stroke:rgba(168,130,255,.14);
+    --text:#f0e9ff;
+    --muted:#9b8ec2;
+    --dim:#6b5f8e;
+    --purple:#a855f7;
+    --blue:#38bdf8;
+    --pink:#e879f9;
+    --green:#4ade80;
+    --shadow:0 18px 44px rgba(88,28,135,.45);
+}
+
+*{
+    margin:0; padding:0; box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none; -webkit-user-select:none;
+}
+
+html,body{
+    width:100%; min-height:100%;
+    overscroll-behavior:none;
+}
+
+body{
+    font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+    direction:rtl;
+    color:var(--text);
+    background:var(--bg);
+    position:relative;
+    overflow-x:hidden;
+    padding-bottom:32px;
+}
+
+body::before{
+    content:'';
+    position:fixed;
+    inset:-25%;
+    z-index:0;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 18% 8%,  rgba(168,85,247,.30), rgba(0,0,0,0) 42%),
+        radial-gradient(circle at 88% 18%, rgba(56,189,248,.24), rgba(0,0,0,0) 44%),
+        radial-gradient(circle at 50% 108%, rgba(232,121,249,.18), rgba(0,0,0,0) 52%);
+    filter:blur(70px);
+    animation:aurora 22s ease-in-out infinite alternate;
+}
+@keyframes aurora{
+    0%{ transform:translate3d(0,0,0) scale(1); }
+    100%{ transform:translate3d(-3%,3%,0) scale(1.08); }
+}
+
+.wrap{
+    position:relative;
+    z-index:1;
+    max-width:520px;
+    margin:0 auto;
+    padding:14px 16px 40px;
+}
+
+/* هدر */
+.top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.home-btn{
+    width:42px; height:42px;
+    border-radius:13px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(168,85,247,.12), rgba(168,85,247,.04));
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+    color:#d8c5ff;
+    cursor:pointer;
+    display:grid; place-items:center;
+    flex:0 0 auto;
+    transition:transform .14s ease, background .2s;
+}
+.home-btn:active{ transform:scale(.94); background:rgba(168,85,247,.22); }
+.home-btn svg{ width:20px; height:20px; }
+
+.title-block{ flex:1; min-width:0; }
+.title-block h1{
+    font-size:18px;
+    font-weight:bold;
+    letter-spacing:.2px;
+    margin-bottom:3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.title-block .sub{
+    font-size:11.5px;
+    color:var(--muted);
+}
+
+/* جستجو */
+.search{
+    position:relative;
+    margin-bottom:12px;
+}
+.search input{
+    width:100%;
+    height:48px;
+    border-radius:14px;
+    border:1px solid var(--stroke);
+    background:rgba(0,0,0,.30);
+    color:var(--text);
+    font-family:inherit;
+    font-size:14px;
+    padding:0 44px 0 14px;
+    outline:none;
+    transition:border-color .2s, background .2s;
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.4);
+}
+.search input:focus{
+    border-color:rgba(168,85,247,.6);
+    background:rgba(0,0,0,.4);
+}
+.search input::placeholder{ color:var(--dim); }
+.search svg{
+    position:absolute;
+    left:14px; top:50%;
+    transform:translateY(-50%);
+    width:18px; height:18px;
+    stroke:var(--dim);
+    fill:none;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    pointer-events:none;
+}
+
+/* لیست */
+.list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.entry{
+    position:relative;
+    border-radius:18px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(168,85,247,.08), rgba(56,189,248,.03));
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:0 10px 24px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.10);
+    overflow:hidden;
+    transition:border-color .2s, background .2s;
+}
+.entry::before{
+    content:'';
+    position:absolute;
+    right:0; top:0; bottom:0;
+    width:3px;
+    background:linear-gradient(180deg,#a855f7,#7c3aed);
+}
+.entry.read{ opacity:.72; }
+.entry.read::after{
+    content:'✓';
+    position:absolute;
+    top:12px; left:12px;
+    width:20px; height:20px;
+    display:grid; place-items:center;
+    border-radius:50%;
+    background:rgba(74,222,128,.18);
+    border:1px solid rgba(74,222,128,.45);
+    color:var(--green);
+    font-size:11px;
+    font-weight:bold;
+    z-index:2;
+}
+
+.entry-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+}
+
+.entry-icon{
+    flex:0 0 auto;
+    width:42px; height:42px;
+    border-radius:13px;
+    display:grid; place-items:center;
+    background:rgba(0,0,0,.28);
+    border:1px solid rgba(168,85,247,.18);
+    color:#c4b5fd;
+}
+.entry-icon svg{
+    width:20px; height:20px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.entry-body{ flex:1; min-width:0; }
+.entry-title{
+    font-size:13.5px;
+    font-weight:bold;
+    line-height:1.5;
+    margin-bottom:3px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.entry-meta{
+    font-size:11px;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+.entry-meta .pill{
+    padding:2px 8px;
+    border-radius:7px;
+    background:rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.25);
+    color:#7dd3fc;
+    font-size:9.5px;
+    font-weight:bold;
+}
+
+/* دکمه‌ی بیشتر */
+.more-btn{
+    flex:0 0 auto;
+    min-height:32px;
+    padding:0 12px;
+    border-radius:10px;
+    border:1px solid rgba(168,85,247,.35);
+    background:rgba(168,85,247,.12);
+    color:#d8b4fe;
+    font-family:inherit;
+    font-size:11.5px;
+    font-weight:bold;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    transition:transform .14s ease, background .2s;
+}
+.more-btn:active{ transform:scale(.95); background:rgba(168,85,247,.26); }
+.more-btn svg{
+    width:13px; height:13px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:2.4;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    transition:transform .2s;
+}
+.more-btn.open svg{ transform:rotate(180deg); }
+
+.entry-go{
+    flex:0 0 auto;
+    width:30px; height:30px;
+    border-radius:9px;
+    display:grid; place-items:center;
+    background:rgba(168,85,247,.12);
+    border:1px solid rgba(168,85,247,.28);
+    color:#d8b4fe;
+    text-decoration:none;
+    cursor:pointer;
+    transition:transform .14s ease, background .2s;
+}
+.entry-go:active{ transform:scale(.92); background:rgba(168,85,247,.26); }
+.entry-go svg{
+    width:14px; height:14px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:2.4;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+/* بخش «بیشتر» */
+.entry-more{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s cubic-bezier(.2,.9,.3,1);
+    background:rgba(0,0,0,.18);
+    border-top:1px solid transparent;
+}
+.entry.open .entry-more{
+    max-height:400px;
+    border-top-color:rgba(168,85,247,.16);
+}
+.entry-more-inner{
+    padding:12px 14px 14px;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.95;
+}
+.entry-more-inner b{ color:#f0abfc; font-weight:bold; }
+.entry-more-inner .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-top:9px;
+}
+.entry-more-inner .tags span{
+    font-size:10px;
+    padding:3px 9px;
+    border-radius:7px;
+    background:rgba(168,85,247,.12);
+    border:1px solid rgba(168,85,247,.26);
+    color:#d8b4fe;
+}
+
+/* خالی */
+.empty{
+    text-align:center;
+    color:var(--muted);
+    font-size:13.5px;
+    padding:50px 22px;
+    line-height:2.1;
+}
+.empty .big{ font-size:42px; display:block; margin-bottom:10px; opacity:.5; }
+
+/* فوتر */
+.foot{
+    text-align:center;
+    font-size:10.5px;
+    color:var(--dim);
+    margin-top:24px;
+    line-height:1.9;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+    <div class="top">
+        <button class="home-btn" id="homeBtn" title="خانه">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11l9-8 9 8"/>
+                <path d="M5 10v10h14V10"/>
+            </svg>
+        </button>
+        <div class="title-block">
+            <h1>آرشیو جلسات</h1>
+            <div class="sub" id="subLine">—</div>
+        </div>
+    </div>
+
+    <div class="search">
+        <input id="q" type="text" placeholder="جستجو در جلسه‌ها…" autocomplete="off" spellcheck="false">
+        <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="M21 21l-4.3-4.3"/>
+        </svg>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="foot">کامی — آموزش کامپیوتر</div>
+
+</div>
+
+<script>
+/* ============================================================
+   داده‌های آرشیو — فقط همین بخش را برای هر جلسه‌ی جدید ویرایش کن
+   ============================================================ */
+
+var ARCHIVE = [
+    {
+        id:    1,
+        title: 'جلسه ۱ — کلیدهای مهم کیبورد',
+        file:  '../1-5.html',
+        note:  'فاصله • اینتر • شیفت • کپس‌لاک • کنترل • اسکیپ',
+        desc:  'در این جلسه با مهم‌ترین کلیدهای کیبورد آشنا می‌شوی: <b>فاصله</b> برای فاصله‌گذاری، <b>اینتر</b> برای رفتن به خط بعد، <b>شیفت</b> برای حروف بزرگ، <b>کپس‌لاک</b> برای قفل کردن حروف بزرگ، <b>کنترل</b> برای میان‌برها و <b>اسکیپ</b> برای لغو کار.',
+        tags:  ['کیبورد', 'مقدماتی', 'کلیدهای اصلی']
+    }
+    /* نمونه‌ی اضافه کردن جلسه‌ی بعدی:
+    ,
+    {
+        id:    2,
+        title: 'جلسه ۲ — ماوس',
+        file:  '../1-6.html',
+        note:  'کلیک چپ • کلیک راست • اسکرول',
+        desc:  'در این جلسه یاد می‌گیری ماوس چطور کار می‌کند و هر کلیک چه کاری انجام می‌دهد.',
+        tags:  ['ماوس', 'مقدماتی']
+    }
+    */
+];
+
+/* ============================================================
+   وضعیت خوانده‌شده (localStorage)
+   ============================================================ */
+
+var READ_KEY = 'kami_archive_read_v1';
+
+function loadRead(){
+    try{
+        var raw = localStorage.getItem(READ_KEY);
+        if(!raw) return {};
+        var o = JSON.parse(raw);
+        return (o && typeof o === 'object') ? o : {};
+    }catch(e){ return {}; }
+}
+
+function saveRead(obj){
+    try{ localStorage.setItem(READ_KEY, JSON.stringify(obj)); }catch(e){}
+}
+
+var READ = loadRead();
+
+/* ============================================================
+   ابزار
+   ============================================================ */
+
+var FA = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+function fa(n){ return String(n).replace(/[0-9]/g, function(d){ return FA[+d]; }); }
+
+function el(id){ return document.getElementById(id); }
+
+function escapeHtml(s){
+    return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+}
+
+function vibrate(p){
+    if(navigator.vibrate){ try{ navigator.vibrate(p); }catch(e){} }
+}
+
+/* ============================================================
+   وضعیت UI
+   ============================================================ */
+
+var state = {
+    q: ''
+};
+
+/* ============================================================
+   فیلتر
+   ============================================================ */
+
+function filtered(){
+    var q = state.q.trim().toLowerCase();
+    if(!q) return ARCHIVE.slice();
+
+    return ARCHIVE.filter(function(item){
+        var hay = (item.title + ' ' + (item.note || '') + ' ' + (item.desc || '')).toLowerCase();
+        return hay.indexOf(q) !== -1;
+    });
+}
+
+/* ============================================================
+   آیکون‌ها
+   ============================================================ */
+
+var ICON = {
+    lesson: '<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>',
+    go:     '<svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>',
+    chev:   '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>'
+};
+
+/* ============================================================
+   رندر لیست
+   ============================================================ */
+
+function renderList(){
+    var items = filtered();
+
+    if(!items.length){
+        el('list').innerHTML =
+            '<div class="empty">' +
+              '<span class="big">🔍</span>' +
+              'چیزی پیدا نشد.<br>' +
+              'عبارت جستجو را عوض کن.' +
+            '</div>';
+        return;
+    }
+
+    var h = '';
+    for(var i = 0; i < items.length; i++){
+        var it = items[i];
+        var isRead = !!READ[it.id];
+
+        h += '<div class="entry' + (isRead ? ' read' : '') + '" data-id="' + it.id + '">';
+
+        h +=   '<div class="entry-row">';
+        h +=     '<div class="entry-icon">' + ICON.lesson + '</div>';
+        h +=     '<div class="entry-body">';
+        h +=       '<div class="entry-title">' + escapeHtml(it.title) + '</div>';
+        h +=       '<div class="entry-meta">';
+        h +=         '<span class="pill">درس</span>';
+        if(it.note){ h += '<span>' + escapeHtml(it.note) + '</span>'; }
+        h +=       '</div>';
+        h +=     '</div>';
+
+        /* دکمه‌ی بیشتر */
+        h +=     '<button class="more-btn" data-more="' + it.id + '">';
+        h +=       'بیشتر ' + ICON.chev;
+        h +=     '</button>';
+
+        /* دکمه‌ی رفتن به فایل */
+        h +=     '<a class="entry-go" href="' + escapeHtml(it.file) + '" title="باز کردن جلسه">';
+        h +=       ICON.go;
+        h +=     '</a>';
+        h +=   '</div>';
+
+        /* بخش آکاردئونی «بیشتر» */
+        h +=   '<div class="entry-more">';
+        h +=     '<div class="entry-more-inner">';
+        if(it.desc){ h += '<div>' + it.desc + '</div>'; }
+        if(it.tags && it.tags.length){
+            h += '<div class="tags">';
+            for(var t = 0; t < it.tags.length; t++){
+                h += '<span>' + escapeHtml(it.tags[t]) + '</span>';
+            }
+            h += '</div>';
+        }
+        h +=     '</div>';
+        h +=   '</div>';
+
+        h += '</div>';
+    }
+    el('list').innerHTML = h;
+
+    /* دکمه‌های بیشتر */
+    var moreBtns = el('list').querySelectorAll('.more-btn');
+    for(var m = 0; m < moreBtns.length; m++){
+        moreBtns[m].onclick = function(e){
+            e.stopPropagation();
+            var id = this.getAttribute('data-more');
+            var card = el('list').querySelector('.entry[data-id="' + id + '"]');
+            if(!card) return;
+            var opened = card.classList.toggle('open');
+            this.classList.toggle('open', opened);
+            vibrate(10);
+        };
+    }
+
+    /* کلیک روی لینک باز کردن جلسه → علامت خوانده‌شده */
+    var goLinks = el('list').querySelectorAll('.entry-go');
+    for(var g = 0; g < goLinks.length; g++){
+        goLinks[g].addEventListener('click', function(){
+            var card = this.closest('.entry');
+            if(!card) return;
+            var id = card.getAttribute('data-id');
+            if(id){
+                READ[id] = 1;
+                saveRead(READ);
+                card.classList.add('read');
+                renderSub();
+            }
+            vibrate(15);
+        });
+    }
+}
+
+/* ============================================================
+   نوار وضعیت
+   ============================================================ */
+
+function renderSub(){
+    var total = ARCHIVE.length;
+    var read  = 0;
+    for(var i = 0; i < total; i++){
+        if(READ[ARCHIVE[i].id]) read++;
+    }
+    el('subLine').textContent =
+        fa(total) + ' جلسه  •  ' + fa(read) + ' خوانده‌شده';
+}
+
+/* ============================================================
+   جستجو
+   ============================================================ */
+
+var searchTimer = null;
+el('q').addEventListener('input', function(){
+    var v = this.value;
+    if(searchTimer) clearTimeout(searchTimer);
+    searchTimer = setTimeout(function(){
+        state.q = v;
+        renderList();
+    }, 120);
+});
+
+/* ============================================================
+   دکمه‌ی خانه — به اپ اصلی برمی‌گردد
+   ============================================================ */
+
+el('homeBtn').onclick = function(){
+    vibrate(15);
+
+    if(window.parent && window.parent !== window){
+        try{
+            window.parent.postMessage({ kami: 'home' }, '*');
+            return;
+        }catch(e){}
+    }
+
+    try{
+        window.location.href = '../index.html';
+    }catch(e){
+        history.back();
+    }
+};
+
+/* ============================================================
+   شروع
+   ============================================================ */
+
+renderList();
+renderSub();
+</script>
+
+</body>
+</html>
