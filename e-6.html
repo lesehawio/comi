@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080c12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="کامی">
+<title>امتحان ۶ — پنج میانبر اصلی</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="exam.css">
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   امتحان ۶ — پنج میانبر اصلی
+   ============================================================ */
+
+window.EXAM = {
+    no: 6,
+    title: 'امتحان ۶ — پنج میانبر اصلی',
+    qs: [
+        { cap:'Ctrl + C', q:'این چیکار می‌کنه؟',
+          opts:['کپی می‌کنه','چاپ می‌کنه','می‌بنده'], a:0 },
+
+        { cap:'Ctrl + V', q:'این چیکار می‌کنه؟',
+          opts:['ذخیره می‌کنه','می‌چسبونه','برمی‌گردونه'], a:1 },
+
+        { cap:'Ctrl + X', q:'این چیکار می‌کنه؟',
+          opts:['برش می‌ده','کپی می‌کنه','جستجو می‌کنه'], a:0 },
+
+        { cap:'Ctrl + Z', q:'این چیکار می‌کنه؟',
+          opts:['تازه‌سازی می‌کنه','برمی‌گردونه','ذخیره می‌کنه'], a:1 },
+
+        { cap:'Ctrl + S', q:'این چیکار می‌کنه؟',
+          opts:['ذخیره می‌کنه','چاپ می‌کنه','پاک می‌کنه'], a:0 },
+
+        { cap:'', q:'اشتباه کردی — کدوم میانبر نجاتت می‌ده؟',
+          opts:['Ctrl + Z','Ctrl + S','Ctrl + C'], a:0 },
+
+        { cap:'', q:'کدوم میانبر رو باید هر چند دقیقه بزنی؟',
+          opts:['Ctrl + S','Ctrl + X','Ctrl + V'], a:0 },
+
+        { cap:'', q:'Ctrl + X چه فرقی با Ctrl + C داره؟',
+          opts:['اصل را هم برمی‌داره','فقط کپی می‌کنه','چاپ می‌کنه'], a:0 }
+    ]
+};
+</script>
+<script src="exam.js"></script>
+
+</body>
+</html>
