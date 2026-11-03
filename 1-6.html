@@ -4,16 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#080c12">
-<title>کلیدهای مهم کیبورد — سطح ۱ / جلسه ۵ (۱ از ۲)</title>
+<title>میانبرهای مهم — سطح ۱ / جلسه ۵ (۲ از ۲)</title>
 <style>
 /* ============================================================
-   سطح ۱ — جلسه ۵ / بخش ۱ : کلیدهای مهم کیبورد
-   Esc • Tab • Caps Lock • Shift • Ctrl
-   Space • Enter • Backspace • Delete • کلیدهای جهت
+   سطح ۱ — جلسه ۵ / بخش ۲ : میانبرهای مهم
+   Ctrl + C  کپی
+   Ctrl + V  چسباندن
+   Ctrl + X  برش
+   Ctrl + Z  برگرداندن
+   Ctrl + S  ذخیره
 
    تک‌فایل • آفلاین • بدون تصویر بیرونی
-   کیبورد با جاوااسکریپت ساخته می‌شود و دوربین روی هر کلید زوم می‌کند.
-
    برای عوض کردن درس‌ها → بخش «محتوای درس‌ها» در پایین فایل
    ============================================================ */
 
@@ -78,7 +79,7 @@ body{
 #dots{
     flex:1;
     display:flex;
-    gap:3px;
+    gap:4px;
 }
 
 #dots i{
@@ -136,37 +137,22 @@ body{
     overflow:visible;
 }
 
-/* کیبورد — دوربین با ترنسفورم جابه‌جا می‌شود */
-#kb{
-    transform-box:view-box;
-    transform-origin:0 0;
-    transition:transform .55s cubic-bezier(.2,.8,.3,1);
-}
+#scene text{ direction:ltr; }
 
-#kb g rect.kcap{
-    fill:url(#gKey);
-    stroke:#3d4655;
-    stroke-width:1.4;
-}
+#scene g.part{ transition:opacity .4s ease; }
 
-#kb g text.klab{
-    fill:#c6d0de;
-}
+#scene.focusing g.part{ opacity:.22; }
 
-#kb g.part{ transition:opacity .35s ease; }
-
-#scene.focusing #kb g.part{ opacity:.22; }
-
-#scene.focusing #kb g.part.spot{
+#scene.focusing g.part.spot{
     opacity:1;
-    filter:drop-shadow(0 0 9px rgba(74,222,128,.95));
+    filter:drop-shadow(0 0 12px rgba(74,222,128,.95));
 }
 
-#kb g.part.hit{
-    filter:drop-shadow(0 0 14px rgba(74,222,128,1));
+#scene g.part.hit{
+    filter:drop-shadow(0 0 16px rgba(74,222,128,1));
 }
 
-#kb g.part.hint{
+#scene g.part.hint{
     animation:hintPulse 1.1s ease-in-out infinite;
 }
 
@@ -174,6 +160,15 @@ body{
     0%,100%{ opacity:.3; }
     50%{ opacity:1; }
 }
+
+/* نمایش نتیجه‌ی میانبر */
+#demo g{ opacity:0; transition:opacity .45s ease; }
+
+#scene[data-demo="copy"]  #demo g[data-dm="copy"]  { opacity:1; }
+#scene[data-demo="paste"] #demo g[data-dm="paste"] { opacity:1; }
+#scene[data-demo="cut"]   #demo g[data-dm="cut"]   { opacity:1; }
+#scene[data-demo="undo"]  #demo g[data-dm="undo"]  { opacity:1; }
+#scene[data-demo="save"]  #demo g[data-dm="save"]  { opacity:1; }
 
 #spotRing{
     opacity:0;
@@ -266,7 +261,7 @@ body{
 
 .btn{
     flex:1;
-    min-width:110px;
+    min-width:104px;
     min-height:64px;
     border-radius:17px;
     background:rgba(255,255,255,.06);
@@ -394,7 +389,6 @@ body{
     .btn{ min-height:56px; font-size:16.5px; }
     #startBig{ width:156px; height:156px; font-size:22px; }
     #panel{ padding:16px 16px 18px; }
-    #dots{ gap:2px; }
 }
 </style>
 </head>
@@ -417,21 +411,61 @@ body{
     <div id="stage">
         <svg id="scene" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
             <defs>
-                <linearGradient id="gKey" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="gCard" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0" stop-color="#3d4655"/>
                     <stop offset="1" stop-color="#242b36"/>
                 </linearGradient>
             </defs>
 
-            <!-- کیبورد با جاوااسکریپت ساخته می‌شود -->
-            <g id="kb"></g>
+            <!-- ============================
+                 نمایش نتیجه‌ی میانبر
+                 ============================ -->
+            <g id="demo">
 
-            <!-- حلقه‌ی نشانگر (بیرون از کیبورد، تا با زوم بزرگ نشود) -->
+                <g data-dm="copy">
+                    <rect x="182" y="16" width="38" height="48" rx="5" fill="#8ea0b5"/>
+                    <rect x="170" y="24" width="38" height="48" rx="5" fill="#eef3f9" stroke="#c6d0dc" stroke-width="1.5"/>
+                    <rect x="178" y="34" width="22" height="4" rx="2" fill="#c6d0dc"/>
+                    <rect x="178" y="44" width="16" height="4" rx="2" fill="#c6d0dc"/>
+                </g>
+
+                <g data-dm="paste">
+                    <rect x="172" y="18" width="46" height="56" rx="6" fill="#eef3f9" stroke="#c6d0dc" stroke-width="1.5"/>
+                    <rect x="186" y="11" width="18" height="10" rx="3" fill="#8ea0b5"/>
+                    <path d="M195 34 L195 56 M187 48 L195 57 L203 48" fill="none"
+                          stroke="#4ade80" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+                <g data-dm="cut">
+                    <rect x="166" y="20" width="42" height="52" rx="6" fill="#eef3f9" stroke="#c6d0dc" stroke-width="1.5"/>
+                    <path d="M174 34 L200 34 M174 44 L194 44" stroke="#c6d0dc" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M214 46 L242 46 M234 37 L243 46 L234 55" fill="none"
+                          stroke="#ffb454" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+                <g data-dm="undo">
+                    <path d="M236 62 C236 32 204 22 180 36" fill="none"
+                          stroke="#4ade80" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M180 36 L195 31 M180 36 L189 49" fill="none"
+                          stroke="#4ade80" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+                <g data-dm="save">
+                    <rect x="164" y="20" width="46" height="52" rx="6" fill="#eef3f9" stroke="#c6d0dc" stroke-width="1.5"/>
+                    <rect x="174" y="28" width="26" height="14" rx="2" fill="#c6d0dc"/>
+                    <path d="M220 44 L230 56 L250 32" fill="none"
+                          stroke="#4ade80" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+            </g>
+
+            <!-- کارت‌های میانبر — با جاوااسکریپت ساخته می‌شوند -->
+            <g id="cards"></g>
+
             <ellipse id="spotRing" cx="0" cy="0" rx="0" ry="0"
                      fill="none" stroke="#4ade80" stroke-width="3" stroke-dasharray="10 8"
                      stroke-linecap="round"/>
 
-            <!-- نشانگر هدف -->
             <g id="hintHand">
                 <g id="hintBounce">
                     <circle cx="0" cy="-16" r="13" fill="none" stroke="#4ade80" stroke-width="2.6" opacity=".5"/>
@@ -462,194 +496,73 @@ body{
    ============================================================ */
 
 var PARTS = {
-    space:     ['فاصله (Space)',  'بزرگ‌ترین کلید کیبورده. بین کلمه‌ها فاصله می‌ندازه.'],
-    enter:     ['اینتر (Enter)',  'کارت رو تأیید می‌کنه. توی نوشتن، می‌ره خط بعد.'],
-    backspace: ['پاک کردن (Back)','حرف‌های قبلی رو پاک می‌کنه.'],
-    shift:     ['شیفت (Shift)',   'با این حرف بزرگ می‌نویسی. یا علامت بالای کلید رو می‌گیری.'],
-    caps:      ['کپس‌لاک (Caps)', 'همه‌ی حرفا رو بزرگ می‌کنه. اگر روشن بمونه، گیج می‌شی.'],
-    tab:       ['تب (Tab)',       'می‌پره خونه‌ی بعدی. توی فرم‌ها به کار میاد.'],
-    ctrl:      ['کنترل (Ctrl)',   'تنها کاری نمی‌کنه — باید با یه کلید دیگه بزنی.'],
-    esc:       ['اسکیپ (Esc)',    'یعنی بی‌خیال شو. پنجره یا منو رو می‌بنده.'],
-    del:       ['دیلیت (Delete)', 'حرف جلویی رو پاک می‌کنه. برعکس بک‌اسپیس.'],
-    arrows:    ['کلیدهای جهت',    'با این چهار تا، نشانگر رو می‌بری بالا و پایین و چپ و راست.']
+    copy:  ['کپی',       'Ctrl + C — هر چیزی رو انتخاب کردی، کپی می‌کنه.'],
+    paste: ['چسباندن',   'Ctrl + V — اون چیزی که کپی کردی رو اینجا می‌چسبونه.'],
+    cut:   ['برش',       'Ctrl + X — مثل کپیه، ولی اصلش رو هم برمی‌داره.'],
+    undo:  ['برگرداندن', 'Ctrl + Z — اشتباه کردی؟ این همه‌چیز رو برمی‌گردونه.'],
+    save:  ['ذخیره',     'Ctrl + S — کارت رو نگه می‌داره. هر چند دقیقه بزنش.']
 };
 
-/* هر کلید در کدام ناحیه دیده می‌شود */
-var KEY_ZONE = {
-    space:'mid', enter:'mid', backspace:'mid',
-    shift:'left', caps:'left', tab:'left', ctrl:'left', esc:'left',
-    del:'nav', arrows:'nav'
-};
+/* کارت‌ها — مثل چیدمان واقعی کیبورد:
+   Z X C V روی ردیف پایین، S روی ردیف وسط */
+var CARDS = [
+    { id:'undo',  letter:'Z', x:9,   y:180 },
+    { id:'cut',   letter:'X', x:107, y:180 },
+    { id:'copy',  letter:'C', x:205, y:180 },
+    { id:'paste', letter:'V', x:303, y:180 },
+    { id:'save',  letter:'S', x:107, y:96  }
+];
 
 /* ترتیب درس‌ها */
 var LESSON = [
     { t:'intro' },
 
-    { t:'teach', part:'space'     },
-    { t:'teach', part:'enter'     },
-    { t:'teach', part:'backspace' },
-    { t:'teach', part:'shift'     },
-    { t:'teach', part:'caps'      },
-    { t:'teach', part:'tab'       },
-    { t:'teach', part:'ctrl'      },
-    { t:'teach', part:'esc'       },
-    { t:'teach', part:'del'       },
-    { t:'teach', part:'arrows'    },
+    { t:'teach', part:'copy'  },
+    { t:'teach', part:'paste' },
+    { t:'teach', part:'cut'   },
+    { t:'teach', part:'undo'  },
+    { t:'teach', part:'save'  },
 
-    { t:'find',  part:'space',     ask:'کلید فاصله رو پیدا کن'      },
-    { t:'find',  part:'enter',     ask:'کلید اینتر رو پیدا کن'      },
-    { t:'find',  part:'backspace', ask:'کلید پاک کردن رو پیدا کن'   },
-    { t:'find',  part:'shift',     ask:'کلید شیفت رو پیدا کن'       },
-    { t:'find',  part:'caps',      ask:'کلید کپس‌لاک رو پیدا کن'    },
-    { t:'find',  part:'tab',       ask:'کلید تب رو پیدا کن'         },
-    { t:'find',  part:'ctrl',      ask:'کلید کنترل رو پیدا کن'      },
-    { t:'find',  part:'esc',       ask:'کلید اسکیپ رو پیدا کن'      },
-    { t:'find',  part:'del',       ask:'کلید دیلیت رو پیدا کن'      },
-    { t:'find',  part:'arrows',    ask:'کلیدهای جهت رو پیدا کن'     },
+    { t:'find',  part:'copy',  ask:'میانبر کپی کدومه؟'        },
+    { t:'find',  part:'paste', ask:'میانبر چسباندن کدومه؟'    },
+    { t:'find',  part:'cut',   ask:'میانبر برش کدومه؟'        },
+    { t:'find',  part:'undo',  ask:'میانبر برگرداندن کدومه؟'  },
+    { t:'find',  part:'save',  ask:'میانبر ذخیره کدومه؟'      },
 
-    { t:'chain', parts:['space','enter','backspace','shift','ctrl','tab'] }
+    { t:'name',  part:'copy'  },
+    { t:'name',  part:'undo'  },
+    { t:'name',  part:'save'  },
+    { t:'name',  part:'cut'   },
+
+    { t:'chain', parts:['copy','paste','undo','save','cut'] }
 ];
 
 /* ============================================================
-   ۲) ساخت کیبورد
+   ۲) ساخت کارت‌ها
    ============================================================ */
 
-var U  = 50;   /* یک واحد کیبورد */
-var KX = 7;    /* فاصله‌ی بین کلیدها */
-
-/* [برچسب، عرض، شناسه‌ی قطعه، متنی که نشان داده می‌شود] */
-var ROWS = [
-    { y:0, h:0.55, keys:[
-        ['Esc',1,'esc'], ['',0.5],
-        ['F1',1], ['F2',1], ['F3',1], ['F4',1], ['',0.4],
-        ['F5',1], ['F6',1], ['F7',1], ['F8',1], ['',0.4],
-        ['F9',1], ['F10',1], ['F11',1], ['F12',1]
-    ]},
-    { y:0.55, h:1, keys:[
-        ['`',1], ['1',1], ['2',1], ['3',1], ['4',1], ['5',1], ['6',1],
-        ['7',1], ['8',1], ['9',1], ['0',1], ['-',1], ['=',1],
-        ['Back',2,'backspace']
-    ]},
-    { y:1.55, h:1, keys:[
-        ['Tab',1.5,'tab'],
-        ['q',1], ['w',1], ['e',1], ['r',1], ['t',1], ['y',1], ['u',1],
-        ['i',1], ['o',1], ['p',1], ['[',1], [']',1], ['\\',1.5]
-    ]},
-    { y:2.55, h:1, keys:[
-        ['Caps',1.75,'caps'],
-        ['a',1], ['s',1], ['d',1], ['f',1], ['g',1], ['h',1], ['j',1],
-        ['k',1], ['l',1], [';',1], ["'",1],
-        ['Enter',2.25,'enter']
-    ]},
-    { y:3.55, h:1, keys:[
-        ['Shift',2.25,'shift'],
-        ['z',1], ['x',1], ['c',1], ['v',1], ['b',1], ['n',1], ['m',1],
-        [',',1], ['.',1], ['/',1],
-        ['Shift',2.75,'shift']
-    ]},
-    { y:4.55, h:1, keys:[
-        ['Ctrl',1.25,'ctrl'], ['Win',1.25], ['Alt',1.25,'alt'],
-        ['Space',6.25,'space',''],
-        ['Alt',1.25,'alt'], ['Win',1.25], ['Menu',1.25], ['Ctrl',1.25,'ctrl']
-    ]}
-];
-
-var NAV = [
-    { x:15.5, y:1.55, label:'Ins'  },
-    { x:16.5, y:1.55, label:'Home' },
-    { x:17.5, y:1.55, label:'PgUp' },
-    { x:15.5, y:2.55, label:'Del', part:'del' },
-    { x:16.5, y:2.55, label:'End'  },
-    { x:17.5, y:2.55, label:'PgDn' },
-    { x:16.5, y:3.55, label:'up',    part:'arrows' },
-    { x:15.5, y:4.55, label:'left',  part:'arrows' },
-    { x:16.5, y:4.55, label:'down',  part:'arrows' },
-    { x:17.5, y:4.55, label:'right', part:'arrows' }
-];
-
-var uid = 0;
-
-function htmlEsc(s){
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function arrowPath(dir, cx, cy){
-    var r = 11;
-    var d = '';
-    if(dir === 'up'){
-        d = 'M' + cx + ',' + (cy-r) + ' L' + (cx+r*0.85) + ',' + (cy+r*0.7) + ' L' + (cx-r*0.85) + ',' + (cy+r*0.7) + ' Z';
-    } else if(dir === 'down'){
-        d = 'M' + cx + ',' + (cy+r) + ' L' + (cx+r*0.85) + ',' + (cy-r*0.7) + ' L' + (cx-r*0.85) + ',' + (cy-r*0.7) + ' Z';
-    } else if(dir === 'left'){
-        d = 'M' + (cx-r) + ',' + cy + ' L' + (cx+r*0.7) + ',' + (cy-r*0.85) + ' L' + (cx+r*0.7) + ',' + (cy+r*0.85) + ' Z';
-    } else {
-        d = 'M' + (cx+r) + ',' + cy + ' L' + (cx-r*0.7) + ',' + (cy-r*0.85) + ' L' + (cx-r*0.7) + ',' + (cy+r*0.85) + ' Z';
-    }
-    return '<path d="' + d + '" fill="#c6d0de"/>';
-}
-
-function keySvg(x, y, w, h, disp, part, name){
-    var px = x * U + KX / 2;
-    var py = y * U + KX / 2;
-    var pw = w * U - KX;
-    var ph = h * U - KX;
-    var cx = px + pw / 2;
-    var cy = py + ph / 2;
-    var isArrow = (name === 'up' || name === 'down' || name === 'left' || name === 'right');
-    var pid = part ? part : ('k' + (uid++));
+function cardSvg(c){
+    var cx = c.x + 44;
     var s = '';
-
-    s += '<g data-part="' + pid + '" class="part">';
-    s += '<rect class="kcap" x="' + px.toFixed(1) + '" y="' + py.toFixed(1) +
-         '" width="' + pw.toFixed(1) + '" height="' + ph.toFixed(1) +
-         '" rx="' + Math.min(9, ph / 4).toFixed(1) + '"/>';
-
-    if(disp){
-        if(isArrow){
-            s += arrowPath(name, cx, cy);
-        } else {
-            var fs = Math.min(20, pw * 0.34, ph * 0.44);
-            if(String(disp).length > 4){ fs = Math.min(fs, pw / String(disp).length * 1.5); }
-            s += '<text class="klab" x="' + cx.toFixed(1) + '" y="' + (cy + fs * 0.36).toFixed(1) +
-                 '" text-anchor="middle" font-size="' + fs.toFixed(1) +
-                 '" font-family="Tahoma">' + htmlEsc(disp) + '</text>';
-        }
-    }
-
-    /* ناحیه‌ی لمس، کمی بزرگ‌تر از خود کلید */
-    s += '<rect x="' + (px - 5).toFixed(1) + '" y="' + (py - 5).toFixed(1) +
-         '" width="' + (pw + 10).toFixed(1) + '" height="' + (ph + 10).toFixed(1) +
-         '" rx="11" fill="transparent" pointer-events="all"/>';
+    s += '<g data-part="' + c.id + '" class="part">';
+    s += '<rect x="' + c.x + '" y="' + c.y + '" width="88" height="72" rx="13" ' +
+         'fill="url(#gCard)" stroke="#4a5462" stroke-width="1.6"/>';
+    s += '<text x="' + cx + '" y="' + (c.y + 29) + '" text-anchor="middle" font-size="14" ' +
+         'font-family="Tahoma" fill="#8b97a8">Ctrl +</text>';
+    s += '<text x="' + cx + '" y="' + (c.y + 61) + '" text-anchor="middle" font-size="30" ' +
+         'font-weight="bold" font-family="Tahoma" fill="#e8edf5">' + c.letter + '</text>';
+    s += '<rect x="' + (c.x - 4) + '" y="' + (c.y - 4) + '" width="96" height="80" rx="16" ' +
+         'fill="transparent" pointer-events="all"/>';
     s += '</g>';
     return s;
 }
 
-function buildKeyboard(){
+function buildCards(){
     var out = '';
-    var r, k, x, row, key, label, w, part, disp;
-
-    for(r=0; r<ROWS.length; r++){
-        row = ROWS[r];
-        x = 0;
-        for(k=0; k<row.keys.length; k++){
-            key = row.keys[k];
-            label = key[0];
-            w     = key[1];
-            part  = key[2];
-            disp  = (key.length > 3) ? key[3] : label;
-            if(label !== ''){
-                out += keySvg(x, row.y, w, row.h, disp, part, label);
-            }
-            x += w;
-        }
+    for(var k=0;k<CARDS.length;k++){
+        out += cardSvg(CARDS[k]);
     }
-
-    for(k=0; k<NAV.length; k++){
-        var n = NAV[k];
-        out += keySvg(n.x, n.y, 1, 1, n.label, n.part, n.label);
-    }
-
-    document.getElementById('kb').innerHTML = out;
+    document.getElementById('cards').innerHTML = out;
 }
 
 /* ============================================================
@@ -657,7 +570,7 @@ function buildKeyboard(){
    ============================================================ */
 
 var scene    = document.getElementById('scene');
-var kb       = document.getElementById('kb');
+var cards    = document.getElementById('cards');
 var dotsEl   = document.getElementById('dots');
 var countEl  = document.getElementById('counter');
 var replayEl = document.getElementById('replay');
@@ -673,8 +586,6 @@ var i = 0;
 var chainIdx = 0;
 var wrongCount = 0;
 var lock = false;
-
-var camTX = 0, camTY = 0, camS = 1;
 
 var FA = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
 
@@ -696,45 +607,12 @@ function findPart(node){
     return null;
 }
 
-function partEls(name){
-    return kb.querySelectorAll('[data-part="' + name + '"]');
-}
-
 function partEl(name){
-    var els = partEls(name);
-    return els.length ? els[0] : null;
-}
-
-function markSpot(name){
-    var els = partEls(name);
-    for(var j=0;j<els.length;j++){ els[j].classList.add('spot'); }
-}
-
-/* ---------------- دوربین ---------------- */
-
-var ZONES = {
-    full: [0,    0,   18.5, 5.55],
-    left: [0,    0,   7.2,  5.55],
-    mid:  [3.0,  0.5, 12.2, 5.05],
-    nav:  [15.1, 1.4, 3.4,  4.15]
-};
-
-function setCamera(zoneName){
-    var z = ZONES[zoneName] || ZONES.full;
-    var zx = z[0] * U;
-    var zy = z[1] * U;
-    var zw = z[2] * U;
-    var zh = z[3] * U;
-
-    camS = Math.min(400 / zw, 300 / zh) * 0.90;
-    camTX = 200 - camS * (zx + zw / 2);
-    camTY = 150 - camS * (zy + zh / 2);
-
-    kb.style.transform = 'translate(' + camTX.toFixed(1) + 'px,' + camTY.toFixed(1) + 'px) scale(' + camS.toFixed(4) + ')';
+    return cards.querySelector('[data-part="' + name + '"]');
 }
 
 function clearMarks(){
-    var all = kb.querySelectorAll('.part');
+    var all = cards.querySelectorAll('.part');
     for(var k=0;k<all.length;k++){
         all[k].classList.remove('spot','hit','hint');
     }
@@ -745,28 +623,27 @@ function clearMarks(){
 
 function showRing(part){
     var el = partEl(part);
-    if(!el || !el.getBBox) return;
-    var b;
-    try{ b = el.getBBox(); }catch(e){ return; }
-    ringEl.setAttribute('cx', camTX + camS * (b.x + b.width / 2));
-    ringEl.setAttribute('cy', camTY + camS * (b.y + b.height / 2));
-    ringEl.setAttribute('rx', camS * (b.width / 2) + 9);
-    ringEl.setAttribute('ry', camS * (b.height / 2) + 9);
+    ringEl.setAttribute('cx', 200);
+    ringEl.setAttribute('cy', 200);
+    ringEl.setAttribute('rx', 0);
+    ringEl.setAttribute('ry', 0);
+    if(el){
+        var b = el.getBBox();
+        ringEl.setAttribute('cx', b.x + b.width / 2);
+        ringEl.setAttribute('cy', b.y + b.height / 2);
+        ringEl.setAttribute('rx', b.width / 2 + 9);
+        ringEl.setAttribute('ry', b.height / 2 + 9);
+    }
     ringEl.classList.add('show');
 }
 
 function showHand(part){
     var el = partEl(part);
     if(!el || !el.getBBox) return;
-    var b;
-    try{ b = el.getBBox(); }catch(e){ return; }
-    var cx = camTX + camS * (b.x + b.width / 2);
-    var ty = camTY + camS * b.y;
-    handEl.setAttribute('transform','translate(' + cx.toFixed(1) + ',' + (ty - 8).toFixed(1) + ')');
+    var b = el.getBBox();
+    handEl.setAttribute('transform','translate(' + (b.x + b.width / 2).toFixed(1) + ',' + (b.y - 8).toFixed(1) + ')');
     handEl.classList.add('show');
 }
-
-/* ---------------- بازخورد ---------------- */
 
 function showBurst(){
     burstEl.innerHTML =
@@ -826,6 +703,7 @@ function render(){
     chainIdx = 0;
     clearMarks();
     replayAnim();
+    scene.setAttribute('data-demo','');
 
     var html = '';
     for(var k=0;k<LESSON.length;k++){
@@ -836,9 +714,9 @@ function render(){
 
     /* ---------- ورود ---------- */
     if(s.t === 'intro'){
-        setCamera('full');
-        titleEl.textContent = 'کیبورد رو بشناسیم';
-        textEl.textContent  = 'این همه‌ی کیبورده. بریم کلیدهای مهمش رو یکی‌یکی ببینیم.';
+        titleEl.textContent = 'میانبر چیه؟';
+        textEl.textContent  = 'دو تا کلید با هم، کار یه عالمه کلیک رو انجام می‌دن. ' +
+                              'حرف‌ها هم تصادفی نیستن: C برای Copy، S برای Save.';
         actEl.innerHTML = '';
         var big = document.createElement('button');
         big.id = 'startBig';
@@ -848,12 +726,12 @@ function render(){
         return;
     }
 
-    /* ---------- معرفی کلید ---------- */
+    /* ---------- معرفی میانبر ---------- */
     if(s.t === 'teach'){
-        setCamera(KEY_ZONE[s.part] || 'full');
         scene.classList.add('focusing');
-        markSpot(s.part);
-        setTimeout(function(){ showRing(s.part); }, 560);
+        partEl(s.part).classList.add('spot');
+        scene.setAttribute('data-demo', s.part);
+        showRing(s.part);
         titleEl.textContent = PARTS[s.part][0];
         textEl.textContent  = PARTS[s.part][1];
         setButtons([{ label:'بعدی', cls:'main', onClick:next }]);
@@ -862,10 +740,44 @@ function render(){
 
     /* ---------- پیدا کن ---------- */
     if(s.t === 'find'){
-        setCamera(KEY_ZONE[s.part] || 'full');
+        /* نمایش نتیجه پنهان می‌ماند، وگرنه جواب لو می‌رود */
         titleEl.textContent = 'پیدا کن';
         textEl.textContent  = s.ask;
         setButtons([]);
+        return;
+    }
+
+    /* ---------- این چیکار می‌کنه؟ ---------- */
+    if(s.t === 'name'){
+        scene.classList.add('focusing');
+        partEl(s.part).classList.add('spot');
+        scene.setAttribute('data-demo', s.part);
+        showRing(s.part);
+        titleEl.textContent = 'این چیکار می‌کنه؟';
+        textEl.textContent  = 'روی جواب درست بزن.';
+
+        var others = [];
+        for(var key in PARTS){
+            if(key !== s.part){ others.push(key); }
+        }
+        others.sort(function(){ return Math.random() - 0.5; });
+
+        var choices = [s.part, others[0], others[1]];
+        choices.sort(function(){ return Math.random() - 0.5; });
+
+        var list = [];
+        for(var c=0;c<choices.length;c++){
+            (function(name){
+                list.push({
+                    label: PARTS[name][0],
+                    onClick: function(){
+                        if(name === s.part){ correct(partEl(name)); }
+                        else { wrongAnswer(); }
+                    }
+                });
+            })(choices[c]);
+        }
+        setButtons(list);
         return;
     }
 
@@ -880,9 +792,8 @@ function renderChain(){
     var s = LESSON[i];
     var want = s.parts[chainIdx];
     clearMarks();
-    setCamera(KEY_ZONE[want] || 'full');
     titleEl.textContent = 'نشونم بده';
-    textEl.textContent  = PARTS[want][0] + ' رو پیدا کن   (' +
+    textEl.textContent  = PARTS[want][0] + ' کدومه؟   (' +
                           fa(chainIdx + 1) + ' از ' + fa(s.parts.length) + ')';
     setButtons([]);
 }
@@ -913,7 +824,7 @@ function correct(el){
             } else {
                 stars();
                 titleEl.textContent = 'آفرین!';
-                textEl.textContent  = 'کلیدهای مهم کیبورد رو شناختی. حالا برو سراغ میانبرها.';
+                textEl.textContent  = 'پنج میانبر مهم رو یاد گرفتی. حالا روی کیبورد واقعی هم امتحان کن.';
                 setButtons([{ label:'از اول', cls:'main', onClick: function(){ i = 0; render(); } }]);
             }
             return;
@@ -936,16 +847,15 @@ function wrongAnswer(){
     var want = s.t === 'chain' ? s.parts[chainIdx] : s.part;
 
     if(wrongCount >= 2 && want){
-        var els = partEls(want);
-        for(var j=0;j<els.length;j++){ els[j].classList.add('hint'); }
-        setTimeout(function(){ showHand(want); }, 120);
+        partEl(want).classList.add('hint');
+        showHand(want);
         if(s.t !== 'chain'){ showRing(want); }
     }
 }
 
-/* ---------------- کلیک روی کیبورد ---------------- */
+/* ---------------- کلیک روی کارت‌ها ---------------- */
 
-kb.addEventListener('click', function(e){
+cards.addEventListener('click', function(e){
     if(lock) return;
     var g = findPart(e.target);
     if(!g) return;
@@ -975,7 +885,7 @@ document.addEventListener('dblclick', function(e){ e.preventDefault(); }, { pass
 
 /* ---------------- شروع ---------------- */
 
-buildKeyboard();
+buildCards();
 render();
 </script>
 
